@@ -15,7 +15,7 @@ interface NetworkApi {
     @GET("/data/json/{fileName}")
     suspend fun loadQueryPlanInfo(
         @Path("fileName")
-        filename:String
+        filename: String
     ): QueryPlanResponse
 
     /**
@@ -25,6 +25,6 @@ interface NetworkApi {
     @Streaming
     suspend fun downloadImage(
         @Path("fileName")
-        fileName:String
+        fileName: String
     ): Response<ResponseBody>
 }

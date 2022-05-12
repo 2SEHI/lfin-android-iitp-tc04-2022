@@ -1,4 +1,4 @@
-package com.lfin.android.iitp.lfin_android_iitp_tc04_2022
+package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.RecyclerviewItemBinding
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
 
-class LogAdaptor : ListAdapter<QueryPlanEntity, LogAdaptor.ItemViewHolder>(COMPARATOR) {
+class LogAdapter : ListAdapter<QueryPlanEntity, LogAdapter.ItemViewHolder>(COMPARATOR) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder = ItemViewHolder(
-        RecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder =
+        ItemViewHolder(
+            RecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
@@ -23,7 +24,8 @@ class LogAdaptor : ListAdapter<QueryPlanEntity, LogAdaptor.ItemViewHolder>(COMPA
         }
     }
 
-    class ItemViewHolder(val binding: RecyclerviewItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class ItemViewHolder(val binding: RecyclerviewItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }
 
 val COMPARATOR = object : DiffUtil.ItemCallback<QueryPlanEntity>() {

@@ -6,10 +6,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetQueryPlanUseCase  @Inject constructor(
+class GetQueryPlanUseCase @Inject constructor(
     private val queryPlanRepository: QueryPlanRepository
 ) {
 
-    fun getQueryPlanList() : List<QueryPlanEntity> = queryPlanRepository.getAllQueryPlan()
+    fun getQueryPlanList(): List<QueryPlanEntity> = queryPlanRepository.getAllQueryPlan()
 
 }

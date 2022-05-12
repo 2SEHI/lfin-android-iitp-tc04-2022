@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "image_file")
-data class ImageFileEntity (
+data class ImageFileEntity(
 
     @PrimaryKey
     var file_name: String
