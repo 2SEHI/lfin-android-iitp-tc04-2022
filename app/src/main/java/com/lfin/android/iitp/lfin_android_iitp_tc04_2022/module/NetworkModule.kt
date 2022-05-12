@@ -1,6 +1,7 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.module
 
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.BuildConfig
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +21,7 @@ object NetworkModule {
     fun provideRetrofit(): Retrofit {
         return Retrofit
             .Builder()
-            .baseUrl("https://22tta.lfin.kr")
+            .baseUrl(Constants.BASE_URL)
             .client(createClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

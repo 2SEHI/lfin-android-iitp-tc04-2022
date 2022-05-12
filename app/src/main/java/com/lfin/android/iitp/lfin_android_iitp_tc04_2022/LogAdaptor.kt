@@ -18,8 +18,8 @@ class LogAdaptor : ListAdapter<QueryPlanEntity, LogAdaptor.ItemViewHolder>(COMPA
         val item = getItem(position)
 
         holder.binding.apply {
-            title.text = item.title
-            description.text = item.description
+            title.text = item.b_file_name
+            description.text = item.metadata
         }
     }
 

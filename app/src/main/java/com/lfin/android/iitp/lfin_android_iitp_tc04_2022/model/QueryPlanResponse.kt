@@ -7,8 +7,8 @@ data class QueryPlanResponse(
     val items: List<Item>
 ) {
     data class Item(
-        val title: String,
-        val description: String
+        val b_file_name: String,
+        val q_file_name: String,
+        val metadata: String
     )
-
 }

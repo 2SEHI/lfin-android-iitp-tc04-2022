@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val itemViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private lateinit var logAdapter: LogAdaptor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +29,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.addTextBtn.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                itemViewModel.addText()
+                mainViewModel.addText()
             }
         }
 
         // 테스트 로그 RecycleView 업데이트
-        itemViewModel.logDataList.observe(this, Observer {
+        mainViewModel.logDataList.observe(this, Observer {
             it?.let {
-//                itemViewModel.smoothScrollToPosition(it.size)
+//                mainViewModel.smoothScrollToPosition(it.size)
                 logAdapter.submitList(it?.toMutableList())
             }
         })

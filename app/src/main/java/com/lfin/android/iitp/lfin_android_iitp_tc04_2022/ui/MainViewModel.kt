@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun addText(){
-        setUseCase.insertText()
+        setUseCase.loadTestData()
         list.addAll(getUseCase.getQueryPlanList())
         _logDataList.postValue(list)
     }

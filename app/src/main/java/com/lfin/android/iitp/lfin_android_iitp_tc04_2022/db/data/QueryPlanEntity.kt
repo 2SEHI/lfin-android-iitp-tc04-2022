@@ -5,8 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "query_plan")
 data class QueryPlanEntity (
-    val title: String,
-    val description: String,
+    val b_file_name: String,
+    val q_file_name: String,
+    val metadata: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val id: Int = 0,
 )

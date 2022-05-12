@@ -2,6 +2,7 @@ package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.module
 
 import android.content.Context
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.AppDatabase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.ImageFileDao
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.QueryPlanDao
 import dagger.Module
 import dagger.Provides
@@ -16,8 +17,13 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideItemDao(appDatabase: AppDatabase): QueryPlanDao =
+    fun provideQueryPlanDao(appDatabase: AppDatabase): QueryPlanDao =
         appDatabase.queryPlanDao()
+
+    @Provides
+    @Singleton
+    fun provideImageFileDao(appDatabase: AppDatabase): ImageFileDao =
+        appDatabase.imageFileDao()
 
     @Provides
     @Singleton
