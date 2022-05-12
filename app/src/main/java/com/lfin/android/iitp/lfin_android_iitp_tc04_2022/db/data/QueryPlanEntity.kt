@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "query_plan")
-data class QueryPlanEntity (
+data class QueryPlanEntity(
     val b_file_name: String,
     val q_file_name: String,
     val metadata: String,
