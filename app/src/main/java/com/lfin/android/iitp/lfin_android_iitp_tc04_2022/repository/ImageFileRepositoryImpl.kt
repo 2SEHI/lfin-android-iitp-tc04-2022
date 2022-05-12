@@ -3,6 +3,7 @@ package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.api.NetworkApi
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.ImageFileDao
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.ImageFileEntity
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,4 +26,8 @@ class ImageFileRepositoryImpl @Inject constructor(
     }
 
     // TODO 이미지 서버에서 가져오기
+    override suspend fun loadImageFile(fileName: String): ResponseBody? {
+
+        return networkApi.downloadImage(fileName).body()
+    }
 }

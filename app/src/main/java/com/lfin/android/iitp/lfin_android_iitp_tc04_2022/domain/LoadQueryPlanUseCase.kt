@@ -1,17 +1,25 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
-import retrofit2.Retrofit
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.api.NetworkApi
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.ImageFileEntity
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.ImageFileRepository
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.QueryPlanRepository
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.QueryPlanRepositoryImpl
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
+import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.ResponseBody
 import javax.inject.Inject
 import javax.inject.Singleton
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 @Singleton
 class LoadQueryPlanUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val queryPlanRepository: QueryPlanRepository,
     private val imageFileRepository: ImageFileRepository
 ) {
@@ -34,23 +42,81 @@ class LoadQueryPlanUseCase @Inject constructor(
         Log.d(TAG, "queryFileList : ${queryFileList.size}")
         val queryEntityList: List<ImageFileEntity> = stringToImageFileEntity(queryFileList)
         imageFileRepository.insertAllImageFile(queryEntityList)
-        getAllImageFile()
+
+        // 이미지 파일 디바이스에 저장
+        downloadImageFile()
     }
 
-    // image_file 테이블에서 파일전체검색
-    fun getAllImageFile() {
-        Log.d(TAG, "getAllImageFile()")
-        val imageFileList = imageFileRepository.getAllImageFile()
-        for (imageFile in imageFileList) {
-            Log.d(TAG, "imageFileName : ${imageFile}")
-        }
-    }
-
-    fun stringToImageFileEntity(fileNameList: List<String>): ArrayList<ImageFileEntity> {
+    private fun stringToImageFileEntity(fileNameList: List<String>): ArrayList<ImageFileEntity> {
         var oList: ArrayList<ImageFileEntity> = arrayListOf()
         for (fileName in fileNameList) {
             oList.add(ImageFileEntity(fileName))
         }
         return oList
+    }
+
+    suspend fun downloadImageFile(): Boolean {
+        var result = true
+        val imgDir = File(context.filesDir.toString() + File.separator + Constants.IMAGE_DIR)
+        // 이미지 저장 디렉토리가 없는 경우 디렉토리 생성
+        if (!imgDir.exists()) {
+            imgDir.mkdirs()
+        }
+        val imageFileList = imageFileRepository.getAllImageFile()
+        var responseBody: ResponseBody? = null
+        for (imageFile in imageFileList) {
+            Log.d(TAG, "imageFileName : ${imageFile}")
+            val imgPath = File(imgDir, imageFile)
+            // 동일한 이미지 파일이 존재하는 경우 삭제
+            if (imgPath.exists()) {
+                imgPath.delete()
+            }
+            try {
+                responseBody = imageFileRepository.loadImageFile(imageFile)
+                // 서버에서 다운받은 이미지를 디바이스에 저장
+                result = saveImageFile(responseBody, imgPath)
+
+            } catch (e: Exception) {
+                Log.d("onResponse", "There is an error")
+                e.printStackTrace()
+                return false
+            }
+        }
+        return result
+    }
+
+
+    /**
+     * 이미지를 내부저장소에 저장
+     */
+    private fun saveImageFile(body: ResponseBody?, imgPath: File): Boolean {
+        if (body == null)
+            return false
+        try {
+            Log.d("DownloadImage", "Reading and writing file")
+            var inputStream: InputStream? = null
+            var outputStream: FileOutputStream? = null
+
+            try {
+
+                Log.d(TAG, "이미지 파일 저장경로: $imgPath")
+                inputStream = body.byteStream()
+                var bitmap = BitmapFactory.decodeStream(inputStream)
+                outputStream = FileOutputStream(imgPath)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                outputStream.flush()
+                Log.d(TAG, "saveBitmap End")
+            } catch (e: IOException) {
+                Log.d("saveFile", e.toString())
+                return false
+            } finally {
+                inputStream?.close()
+                outputStream?.close()
+            }
+            return true
+        } catch (e: IOException) {
+            Log.d("saveFile", e.toString())
+            return false
+        }
     }
 }
