@@ -15,4 +15,6 @@ interface QueryPlanRepository {
 
     // queryPlan 전체삽입
     suspend fun insertAllQueryPlan()
+
+    fun deleteAllQueryPlan()
 }

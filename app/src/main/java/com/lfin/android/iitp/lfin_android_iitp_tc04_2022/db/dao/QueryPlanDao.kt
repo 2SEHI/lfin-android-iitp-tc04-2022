@@ -1,6 +1,7 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
@@ -19,4 +20,7 @@ interface QueryPlanDao {
 
     @Insert
     fun insertAll(items: List<QueryPlanEntity>)
+
+    @Query("DELETE FROM query_plan")
+    fun deleteAll()
 }

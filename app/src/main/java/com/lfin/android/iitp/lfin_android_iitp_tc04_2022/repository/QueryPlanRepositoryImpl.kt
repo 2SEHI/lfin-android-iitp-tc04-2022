@@ -53,4 +53,8 @@ class QueryPlanRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun deleteAllQueryPlan(){
+        dao.deleteAll()
+    }
+
 }
