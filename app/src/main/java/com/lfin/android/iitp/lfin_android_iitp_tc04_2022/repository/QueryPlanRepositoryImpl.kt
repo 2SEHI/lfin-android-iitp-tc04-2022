@@ -2,8 +2,8 @@ package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository
 
 import android.util.Log
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.api.NetworkApi
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.QueryPlanDao
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.QueryPlanLocalDataSource
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class QueryPlanRepositoryImpl @Inject constructor(
     retrofit: Retrofit,
-    private val dao: QueryPlanDao
+    private val queryPlanLocalDataSource: QueryPlanLocalDataSource
 ) : QueryPlanRepository {
 
     companion object {
@@ -24,11 +24,11 @@ class QueryPlanRepositoryImpl @Inject constructor(
 
     private val networkApi by lazy { retrofit.create(NetworkApi::class.java) }
 
-    override fun getAllQueryPlan(): List<QueryPlanEntity> = dao.selectAll()
+    override fun getAllQueryPlan(): List<QueryPlanEntity> = queryPlanLocalDataSource.selectAll()
 
-    override fun getAllBaseFile(): List<String> = dao.selectBaseFile()
+    override fun getAllBaseFile(): List<String> = queryPlanLocalDataSource.selectBaseFile()
 
-    override fun getAllQueryFile(): List<String> = dao.selectQueryFile()
+    override fun getAllQueryFile(): List<String> = queryPlanLocalDataSource.selectQueryFile()
 
     override suspend fun insertAllQueryPlan() {
         withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
@@ -44,7 +44,7 @@ class QueryPlanRepositoryImpl @Inject constructor(
                         it.metadata
                     )
                 }.apply {
-                    dao.insertAll(this)
+                    queryPlanLocalDataSource.insertAll(this)
                     Log.d(TAG, "데이터 저장 개수: ${this.size}")
                 }
             } catch (e: Exception) {
@@ -54,7 +54,7 @@ class QueryPlanRepositoryImpl @Inject constructor(
     }
 
     override fun deleteAllQueryPlan(){
-        dao.deleteAll()
+        queryPlanLocalDataSource.deleteAll()
     }
 
 }

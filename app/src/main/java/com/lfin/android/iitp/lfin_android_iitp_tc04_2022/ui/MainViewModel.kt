@@ -56,7 +56,7 @@ class MainViewModel @Inject constructor(
         resetUseCase.deleteQueryPlan()
     }
 
-    suspend fun addText() {
+    suspend fun readyForTest() {
         setUseCase.loadTestData()
         list.addAll(getUseCase.getQueryPlanList())
         _logDataList.postValue(list)
