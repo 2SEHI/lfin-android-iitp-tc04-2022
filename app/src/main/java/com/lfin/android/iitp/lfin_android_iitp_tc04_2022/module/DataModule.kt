@@ -4,6 +4,10 @@ import android.content.Context
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.AppDatabase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.ImageFileDao
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.QueryPlanDao
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.ImageFileLocalDataSource
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.ImageFileLocalDataSourceImpl
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.QueryPlanLocalDataSource
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.QueryPlanLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +33,16 @@ object DataModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         AppDatabase.buildDatabase(context)
+
+    @Provides
+    @Singleton
+    fun provideQueryPlanLocalDataSource(dao: QueryPlanDao): QueryPlanLocalDataSource {
+        return QueryPlanLocalDataSourceImpl(dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageFileLocalDataSource(dao: ImageFileDao): ImageFileLocalDataSource {
+        return ImageFileLocalDataSourceImpl(dao)
+    }
 }

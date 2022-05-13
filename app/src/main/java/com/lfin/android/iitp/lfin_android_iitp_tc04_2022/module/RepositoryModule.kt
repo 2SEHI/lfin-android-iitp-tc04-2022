@@ -1,7 +1,7 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.module
 
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.ImageFileDao
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dao.QueryPlanDao
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.ImageFileLocalDataSource
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.dataSource.QueryPlanLocalDataSource
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.ImageFileRepository
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.ImageFileRepositoryImpl
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.QueryPlanRepository
@@ -21,13 +21,13 @@ object RepositoryModule {
     @Provides
     fun provideQueryPlanRepository(
         retrofit: Retrofit,
-        dao: QueryPlanDao
-    ): QueryPlanRepository = QueryPlanRepositoryImpl(retrofit, dao)
+        queryPlanLocalDataSource: QueryPlanLocalDataSource
+    ): QueryPlanRepository = QueryPlanRepositoryImpl(retrofit, queryPlanLocalDataSource)
 
     @Singleton
     @Provides
     fun provideImageFileRepository(
         retrofit: Retrofit,
-        dao: ImageFileDao
-    ): ImageFileRepository = ImageFileRepositoryImpl(retrofit, dao)
+        imageFileLocalDataSource: ImageFileLocalDataSource
+    ): ImageFileRepository = ImageFileRepositoryImpl(retrofit, imageFileLocalDataSource)
 }
