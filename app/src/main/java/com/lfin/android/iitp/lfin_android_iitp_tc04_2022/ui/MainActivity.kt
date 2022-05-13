@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             // 데이터 가져오기
             binding.loadDataBtn -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    mainViewModel.addText()
+                    mainViewModel.readyForTest()
                 }
             }
             // 시험시작
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-//        StartTestService.pause(this)
+        mainViewModel.reset()
         Log.d(TAG, "onDestroy() 호출")
     }
 

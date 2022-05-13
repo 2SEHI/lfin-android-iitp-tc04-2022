@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.GetQueryPlanUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.LoadQueryPlanUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val setUseCase: LoadQueryPlanUseCase,
-    private val getUseCase: GetQueryPlanUseCase
+    private val getUseCase: GetQueryPlanUseCase,
+    private val resetUseCase: ResetUseCase,
 ) : ViewModel() {
     private val _currentState =
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
@@ -34,7 +36,24 @@ class MainViewModel @Inject constructor(
     private val list = mutableListOf<QueryPlanEntity>()
 
     init {
-        _logDataList.value = getUseCase.getQueryPlanList()
+        resetDisPlay()
+    }
+
+    fun reset() {
+        resetDisPlay()
+        resetData()
+    }
+
+    fun resetDisPlay() {
+        _logDataList.value = emptyList()
+        _currentState.value = Constants.CS_BEFORE_TEST_DATA
+        _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
+        _baseImage.value = ""
+        _queryImage.value = ""
+    }
+
+    fun resetData() {
+        resetUseCase.deleteQueryPlan()
     }
 
     suspend fun addText() {

@@ -9,6 +9,7 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.ImageFileRep
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.repository.QueryPlanRepository
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,10 +28,12 @@ class LoadQueryPlanUseCase @Inject constructor(
         val TAG: String = LoadQueryPlanUseCase::class.java.simpleName
     }
 
+
+    // 1. QueryPlan 가져오기
+    // 2. 이미지 저장 중
     suspend fun loadTestData() {
         // QueryPlan 모두 가져오기
         queryPlanRepository.insertAllQueryPlan()
-
 
         // query_plan 테이블의 파일명을 image_file 테이블에 저장
         val baseFileList = queryPlanRepository.getAllBaseFile()
