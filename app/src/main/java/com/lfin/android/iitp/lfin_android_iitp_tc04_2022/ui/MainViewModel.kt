@@ -3,23 +3,34 @@ package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.GetQueryPlanUseCase
+import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.LoadQueryPlanUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.LoadMetaDataUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.StartTestUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val setUseCase: LoadQueryPlanUseCase,
-    private val getUseCase: GetQueryPlanUseCase,
+    private val loadMetaData: LoadMetaDataUseCase,
+    private val startTestUseCase: StartTestUseCase,
     private val resetUseCase: ResetUseCase,
 ) : ViewModel() {
+
+    companion object {
+        val TAG: String = MainViewModel::class.java.simpleName
+    }
+
     private val _currentState =
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
     val currentState: LiveData<String> get() = _currentState
+
+//    private val _currentState : MutableStateFlow<String> = MutableStateFlow(Constants.CS_BEFORE_TEST_DATA)
+//    val currentState: StateFlow<String> get() = _currentState
 
     private val _nextBehavior =
         MutableLiveData<String>().apply { value = Constants.NB_CLICK_DATA_LOADING }
@@ -36,15 +47,15 @@ class MainViewModel @Inject constructor(
     private val list = mutableListOf<QueryPlanEntity>()
 
     init {
-        resetDisPlay()
+        resetDisplay()
     }
 
     fun reset() {
-        resetDisPlay()
+        resetDisplay()
         resetData()
     }
 
-    fun resetDisPlay() {
+    fun resetDisplay() {
         _logDataList.value = emptyList()
         _currentState.value = Constants.CS_BEFORE_TEST_DATA
         _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
@@ -56,9 +67,23 @@ class MainViewModel @Inject constructor(
         resetUseCase.deleteQueryPlan()
     }
 
-    suspend fun readyForTest() {
-        setUseCase.loadTestData()
-        list.addAll(getUseCase.getQueryPlanList())
-        _logDataList.postValue(list)
+    fun readyForTest() {
+
+        viewModelScope.launch {
+            loadMetaData.loadMetaData().collectLatest {
+                _currentState.postValue("emit $it")
+                println("number >> emit $it")
+            }
+
+        }
+    }
+
+    fun startTest() {
+        startTestUseCase.startTest()
+//        viewModelScope.launch {
+//            startTestUseCase.startTest().collect {
+//                _currentState.postValue("emit $it")
+//            }
+//        }
     }
 }
