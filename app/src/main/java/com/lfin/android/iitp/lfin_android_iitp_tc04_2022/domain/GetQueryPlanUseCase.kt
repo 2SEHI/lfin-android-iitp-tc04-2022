@@ -9,7 +9,10 @@ import javax.inject.Singleton
 class GetQueryPlanUseCase @Inject constructor(
     private val queryPlanRepository: QueryPlanRepository
 ) {
-
+    companion object {
+        val TAG: String = GetQueryPlanUseCase::class.java.simpleName
+    }
     fun getQueryPlanList(): List<QueryPlanEntity> = queryPlanRepository.getAllQueryPlan()
-
+    val baseFileList = queryPlanRepository.getAllBaseFile()
+    val queryFileList = queryPlanRepository.getAllQueryFile()
 }

@@ -8,7 +8,9 @@ import javax.inject.Singleton
 class ResetUseCase @Inject constructor(
     private val queryPlanRepository: QueryPlanRepository,
 ) {
-
+    companion object {
+        val TAG: String = ResetUseCase::class.java.simpleName
+    }
     fun deleteQueryPlan() {
         queryPlanRepository.deleteAllQueryPlan()
     }
