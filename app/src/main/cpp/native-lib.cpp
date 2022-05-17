@@ -81,6 +81,13 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     }
 }
 
+jdouble GetNumberFromMetadata(jbyteArray decodedArray, jint idx)
+{
+    double *ptr = (double *)decodedArray;
+
+    return ptr[idx];
+}
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_putMetadata(
@@ -88,10 +95,14 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
         jobject thiz,
         jstring byte_array) {
     const char *meta_data = env->GetStringUTFChars(byte_array, 0);
+
     size_t length = strlen(meta_data);
 
     env->ReleaseStringUTFChars(byte_array, meta_data);
 
-    // Metadata
-    lpin::opencv::PutByteBlock((char *)meta_data, length);
+//    double *ptr = (double *)meta_data;
+//
+//    // Metadata
+    lpin::opencv::PutByteBlock((char *)meta_data, 32);
 }
+

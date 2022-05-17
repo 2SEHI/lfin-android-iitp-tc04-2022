@@ -12,6 +12,6 @@ class GetImageFileUseCase  @Inject constructor(
     companion object {
         val TAG: String = GetImageFileUseCase::class.java.simpleName
     }
-    val imageFileList = imageFileRepository.getAllImageFile()
+    fun imageFileList() = imageFileRepository.getAllImageFile()
     suspend fun loadBitmap(fileName: String ) : ResponseBody? = imageFileRepository.loadImageFile(fileName)
 }
