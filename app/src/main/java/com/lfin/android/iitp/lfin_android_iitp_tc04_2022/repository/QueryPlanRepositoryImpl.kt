@@ -31,7 +31,7 @@ class QueryPlanRepositoryImpl @Inject constructor(
     override fun getAllQueryFile(): List<String> = queryPlanLocalDataSource.selectQueryFile()
 
     override suspend fun insertAllQueryPlan() {
-        withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+
             Log.d(TAG, "insertItem2 시작")
             try {
                 // 이미지 메타데이터 가져와서 DB에 저장
@@ -50,7 +50,7 @@ class QueryPlanRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 Log.d(TAG, "${e.printStackTrace()}")
             }
-        }
+
     }
 
     override fun deleteAllQueryPlan(){

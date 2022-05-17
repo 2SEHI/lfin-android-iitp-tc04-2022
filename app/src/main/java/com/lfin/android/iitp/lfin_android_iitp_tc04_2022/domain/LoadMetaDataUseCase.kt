@@ -25,23 +25,19 @@ class LoadMetaDataUseCase @Inject constructor(
 
     // 1. QueryPlan 가져오기
     // 2. 이미지 저장 중
-    fun loadMetaData() = flow {
+    suspend fun loadMetaData() {
         // QueryPlan 서버에서 가져온 후 DB저장
         setQueryPlanUseCase.setQueryPlan()
-        emit("base 이미지 파일 목록 가져오는 중")
-
-        val baseEntityList: List<ImageFileEntity> =
-            stringToImageFileEntity(getQueryPlanUseCase.baseFileList)
+        val baseEntityList: List<ImageFileEntity> = stringToImageFileEntity(getQueryPlanUseCase.baseFileList())
         setImageFileUseCase.setImageFileList(baseEntityList)
 
-        emit("query 이미지 파일 목록 가져오는 중")
-        val queryEntityList: List<ImageFileEntity> =
-            stringToImageFileEntity(getQueryPlanUseCase.queryFileList)
+        val queryEntityList: List<ImageFileEntity> = stringToImageFileEntity(getQueryPlanUseCase.queryFileList())
         setImageFileUseCase.setImageFileList(queryEntityList)
 
-        emit("이미지 파일 저장 중")
-        Log.d(TAG, "이미지 파일 목록 개수: ${getImageFileUseCase.imageFileList}")
-        downloadImageFile(getImageFileUseCase.imageFileList)
+        val imageFileList = getImageFileUseCase.imageFileList()
+        if (imageFileList.isNotEmpty()){
+            downloadImageFile(imageFileList)
+        }
     }
 
     private fun stringToImageFileEntity(fileNameList: List<String>): ArrayList<ImageFileEntity> {
@@ -63,7 +59,7 @@ class LoadMetaDataUseCase @Inject constructor(
         }
         var responseBody: ResponseBody? = null
         for (imageFile in imageFileList) {
-            Log.d(TAG, "imageFileName : $imageFile")
+//            Log.d(TAG, "imageFileName : $imageFile")
             val imgPath = File(imgDir, imageFile)
             // 동일한 이미지 파일이 존재하는 경우 삭제
             if (imgPath.exists()) {
@@ -75,7 +71,7 @@ class LoadMetaDataUseCase @Inject constructor(
                 result = setImageFileUseCase.saveImageFile(responseBody, imgPath)
 
             } catch (e: Exception) {
-                Log.d("onResponse", "There is an error")
+                Log.d("onResponse", "${e.printStackTrace()}")
                 e.printStackTrace()
 //                return false
             }

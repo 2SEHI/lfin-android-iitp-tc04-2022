@@ -13,6 +13,6 @@ class GetQueryPlanUseCase @Inject constructor(
         val TAG: String = GetQueryPlanUseCase::class.java.simpleName
     }
     fun getQueryPlanList(): List<QueryPlanEntity> = queryPlanRepository.getAllQueryPlan()
-    val baseFileList = queryPlanRepository.getAllBaseFile()
-    val queryFileList = queryPlanRepository.getAllQueryFile()
+    fun baseFileList() = queryPlanRepository.getAllBaseFile()
+    fun queryFileList() = queryPlanRepository.getAllQueryFile()
 }

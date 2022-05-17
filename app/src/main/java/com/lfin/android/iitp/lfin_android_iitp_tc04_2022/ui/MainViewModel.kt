@@ -10,8 +10,11 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.StartTestUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,14 +70,9 @@ class MainViewModel @Inject constructor(
         resetUseCase.deleteQueryPlan()
     }
 
-    fun readyForTest() {
-
-        viewModelScope.launch {
-            loadMetaData.loadMetaData().collectLatest {
-                _currentState.postValue("emit $it")
-                println("number >> emit $it")
-            }
-
+    suspend fun readyForTest() {
+        withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            loadMetaData.loadMetaData()
         }
     }
 

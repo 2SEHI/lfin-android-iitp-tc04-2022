@@ -48,14 +48,18 @@ class StartTestUseCase @Inject constructor(
             OpenCVAdapter.initializeModule()
             OpenCVAdapter.putBitmap(baseBitmap)
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+
             OpenCVAdapter.putBitmap(queryBitmap)
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
             // convert base64 to ByteArray
             val metaData = decodeBase64(queryPlan.metadata)
+
             Log.d("${queryPlan.id} : ", metaData)
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+
             OpenCVAdapter.putMetadata(metaData)
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+
             OpenCVAdapter.imageProcessing()
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(1)}")
@@ -65,6 +69,9 @@ class StartTestUseCase @Inject constructor(
 
     private fun saveCSV() {
         val csvDir = File("${context.filesDir}${File.separator}${Constants.CSV_DIR}")
+//        val csvDir = File("${context.getExternalFilesDir(DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
+        Log.d(TAG,"saveCSV csvDir: ${csvDir}")
+//        val csvDir = File("${context.filesDir}${File.separator}${Constants.CSV_DIR}")
         if (!csvDir.exists()) {
             csvDir.mkdirs()
         }
