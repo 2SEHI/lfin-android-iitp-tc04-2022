@@ -11,14 +11,16 @@ static char *buffer_log;
 static char *buffer_fullResult;
 
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT int JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_initializeModule(
         JNIEnv *env, jobject thiz) {
-    lpin::opencv::Initialize(0);
+    int result = lpin::opencv::Initialize(0);
 
     buffer_status = lpin::opencv::GetPtrOfString(0);
     buffer_log = lpin::opencv::GetPtrOfString(1);
     buffer_fullResult = lpin::opencv::GetPtrOfString(2);
+
+    return result;
 }
 
 extern "C"

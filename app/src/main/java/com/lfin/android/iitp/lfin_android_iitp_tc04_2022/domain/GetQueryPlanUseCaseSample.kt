@@ -10,6 +10,7 @@ import javax.inject.Singleton
 class GetQueryPlanUseCaseSample @Inject constructor(
     private val queryPlanRepository: QueryPlanRepository
 ) : UseCaseNonParam<List<QueryPlanEntity>>(Dispatchers.IO) {
+
     companion object {
         val TAG: String = GetQueryPlanUseCaseSample::class.java.simpleName
     }

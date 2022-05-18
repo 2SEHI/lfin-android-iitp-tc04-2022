@@ -6,6 +6,7 @@ buildscript {
         okhttp_version = '4.9.3'
         retrofit_version = '2.9.0'
         ktor_version = "1.6.0"
+        glide_version = "4.13.0"
     }
 
     dependencies {

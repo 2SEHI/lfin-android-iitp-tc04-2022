@@ -1,6 +1,6 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
-
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
@@ -11,17 +11,28 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.onEach
 import java.io.File
+import android.net.Uri
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.decodeBase64
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val loadMetaData: LoadMetaDataUseCase,
+    private val initializeModuleUseCase: InitializeModuleUseCase,
+    private val putBaseImageUseCase: PutBaseImageUseCase,
+    private val putQueryImageUseCase: PutQueryImageUseCase,
+    private val putMetadataUseCase: PutMetadataUseCase,
+    private val findLocationUseCase: FindLocationUseCase,
+    private val getResultForDisplayUseCase: GetResultForDisplayUseCase,
+
     private val startTestUseCase: StartTestUseCase,
-    private val resetUseCase: ResetUseCase,
+    private val resetQueryPlanUseCase: ResetQueryPlanUseCase,
     // ClearCsvDataUseCase
     // PutCsvDataUseCase
     // ExportCsvDataUseCase
@@ -39,71 +50,79 @@ class MainViewModel @Inject constructor(
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
     val currentState: LiveData<String> get() = _currentState
 
-//    private val _currentState : MutableStateFlow<String> = MutableStateFlow(Constants.CS_BEFORE_TEST_DATA)
-//    val currentState: StateFlow<String> get() = _currentState
-
     private val _nextBehavior =
         MutableLiveData<String>().apply { value = Constants.NB_CLICK_DATA_LOADING }
     val nextBehavior: LiveData<String> get() = _nextBehavior
 
-    private val _baseImage = MutableLiveData<String>().apply { value = "" }
+    private val _baseImage = MutableLiveData<Uri>()
     val baseImage = _baseImage
 
-    private val _queryImage = MutableLiveData<String>().apply { value = "" }
+    private val _queryImage = MutableLiveData<Uri>()
     val queryImage = _queryImage
 
-    private val _logDataList = MutableLiveData<List<QueryPlanEntity>>()
-    val logDataList: LiveData<List<QueryPlanEntity>> = _logDataList
-    private val list = mutableListOf<QueryPlanEntity>()
+    private val _logDataList = MutableLiveData<List<String?>>()
+    val logDataList: LiveData<List<String?>> = _logDataList
+    private val list = mutableListOf<String?>()
 
     init {
-        resetDisplay()
 
+
+        _logDataList.value = list
+        _currentState.value = Constants.CS_BEFORE_TEST_DATA
+        _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
+        _baseImage.value = Uri.fromFile(File(""))
+        _queryImage.value = Uri.fromFile(File(""))
     }
 
     /**
-     * 이미지 프로세싱 시작
+     * 데이터 다운로드 및 저장 시작
      */
-    val processingStart = View.OnClickListener {
+    val dataLoadingStart = View.OnClickListener {
         viewModelScope.launch {
-            // Clear
-            // val getQueryPlanAsync = async { getQueryPlanUseCase.invoke() }
-            val response = getQueryPlanUseCase.invoke()
-            if (response.succeeded) {
-                // TODO 데이터 처리
-                response.data
-                //
-                // Put
-                response.data?.forEach {
-                    it.b_file_name
-                }
-            } else {
-
-            }
+            loadMetaData.loadMetaData()
         }
     }
 
     /**
      * 이미지 프로세싱 시작
      */
-    val processingStart2 = View.OnClickListener {
+    var processingStart = View.OnClickListener {
         viewModelScope.launch {
-            // Clear
-            // val getQueryPlanAsync = async { getQueryPlanUseCase.invoke() }
+            val imgDir = File("${context.filesDir}${File.separator}${Constants.IMAGE_DIR}")
+
+            // 모듈 초기화
+            val initializeReponse = initializeModuleUseCase.invoke()
+
+            var baseImagePath: String
+            var queryImagePath: String
+
+            // list of QueryPlan from <QueryPlan> Table
             val response = getQueryPlanUseCase.invoke()
             if (response.succeeded) {
-                // TODO 데이터 처리
-                response.data
-                //
                 // Put
                 response.data?.forEach {
-                    val processingResult =
-                        findLocationProcessingUseCase.invoke(FindLocationProcessingUseCase.Param(it))
-                    if (processingResult.succeeded) {
-                        // CSV 저장할곳에 데이터 입력
+                    // 이미지 화면출력
+                    baseImagePath = "$imgDir${File.separator}${it.b_file_name}"
+                    queryImagePath = "$imgDir${File.separator}${it.q_file_name}"
 
-                    }
+                    _baseImage.postValue(Uri.fromFile(File(baseImagePath)))
+                    _queryImage.postValue(Uri.fromFile(File(queryImagePath)))
+//                    delay(500L)
+                    val baseBitmap = BitmapFactory.decodeFile(baseImagePath)
+                    val queryBitmap = BitmapFactory.decodeFile(queryImagePath)
+
+                    _currentState.postValue(putBaseImageUseCase.invoke(PutBaseImageUseCase.Param(baseBitmap)).data)
+                    _currentState.postValue(putQueryImageUseCase.invoke(PutQueryImageUseCase.Param(queryBitmap)).data)
+
+                    // convert base64 to ByteArray
+                    val metaData = decodeBase64(it.metadata)
+                    _currentState.postValue(putMetadataUseCase.invoke(PutMetadataUseCase.Param(metaData)).data)
+                    _currentState.postValue(findLocationUseCase.invoke().data)
+                    list.add(getResultForDisplayUseCase.invoke().data)
+                    _logDataList.postValue(list)
                 }
+
+
             } else {
 
             }
@@ -111,39 +130,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun reset() {
-        resetData()
-        resetDisplay()
-    }
-
-    private fun resetDisplay() {
-        _logDataList.value = emptyList()
-        _currentState.value = Constants.CS_BEFORE_TEST_DATA
-        _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
-        _baseImage.value = ""
-        _queryImage.value = ""
-    }
-
-    private fun resetData() {
-        resetUseCase.deleteQueryPlan()
-    }
-
-    suspend fun readyForTest() {
-        withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-            loadMetaData.loadMetaData()
-        }
-    }
-
-    fun startTest() {
-
         viewModelScope.launch {
-            startTestUseCase.imageProcessing().onEach {
-                _currentState.postValue("${it.currentState}")
-                _baseImage.postValue("${it.baseImage}")
-                _queryImage.postValue("${it.queryImage}")
-                Log.d("_queryImage.postValue", "${it.queryImage}")
-            }.conflate().collect {
-
-            }
+            resetQueryPlanUseCase.invoke()
         }
     }
+
 }
