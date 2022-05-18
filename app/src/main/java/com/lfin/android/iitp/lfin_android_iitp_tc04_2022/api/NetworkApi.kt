@@ -21,7 +21,7 @@ interface NetworkApi {
     /**
      * 이미지파일 다운로드
      */
-    @GET("/data/images/tc04_2/{fileName}")
+    @GET("/data/images/tc04/{fileName}")
     @Streaming
     suspend fun downloadImage(
         @Path("fileName")

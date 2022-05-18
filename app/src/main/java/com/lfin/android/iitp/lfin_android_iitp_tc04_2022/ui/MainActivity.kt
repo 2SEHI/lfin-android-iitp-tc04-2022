@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // 데이터 가져오기 클릭
         binding.loadDataBtn.setOnClickListener(this)
         // 시험 시작 클릭
-        binding.startTestBtn.setOnClickListener(this)
+//        binding.startTestBtn.setOnClickListener(this)
         // 시험 결과 내보내기 클릭
         binding.sendResultBtn.setOnClickListener(this)
 
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 // 결과 보내기
                 binding.sendResultBtn -> {
-//                    openFile()
+                    openFile()
                 }
             }
         }
@@ -116,9 +116,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      * 파일 선택
      */
     private fun openFile() {
-//        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
-                val csvDir = File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
-        val csvDirUri = Uri.fromFile(File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}"))
+
+        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
+//                val csvDir = File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
+//        val csvDirUri = Uri.fromFile(File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}"))
 
         Log.d(TAG, "csvDirUri - $csvDirUri")
         // 파일 선택 Intent

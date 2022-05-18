@@ -1,20 +1,20 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
 
+import android.content.Context
+import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.LoadMetaDataUseCase
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetUseCase
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.StartTestUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.onEach
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,10 +22,17 @@ class MainViewModel @Inject constructor(
     private val loadMetaData: LoadMetaDataUseCase,
     private val startTestUseCase: StartTestUseCase,
     private val resetUseCase: ResetUseCase,
+    // ClearCsvDataUseCase
+    // PutCsvDataUseCase
+    // ExportCsvDataUseCase
+    // GetImageProcessingState
+    private val getQueryPlanUseCase: GetQueryPlanUseCaseSample,
+    private val findLocationProcessingUseCase: FindLocationProcessingUseCase
 ) : ViewModel() {
 
     companion object {
         val TAG: String = MainViewModel::class.java.simpleName
+
     }
 
     private val _currentState =
@@ -51,14 +58,64 @@ class MainViewModel @Inject constructor(
 
     init {
         resetDisplay()
+
+    }
+
+    /**
+     * 이미지 프로세싱 시작
+     */
+    val processingStart = View.OnClickListener {
+        viewModelScope.launch {
+            // Clear
+            // val getQueryPlanAsync = async { getQueryPlanUseCase.invoke() }
+            val response = getQueryPlanUseCase.invoke()
+            if (response.succeeded) {
+                // TODO 데이터 처리
+                response.data
+                //
+                // Put
+                response.data?.forEach {
+                    it.b_file_name
+                }
+            } else {
+
+            }
+        }
+    }
+
+    /**
+     * 이미지 프로세싱 시작
+     */
+    val processingStart2 = View.OnClickListener {
+        viewModelScope.launch {
+            // Clear
+            // val getQueryPlanAsync = async { getQueryPlanUseCase.invoke() }
+            val response = getQueryPlanUseCase.invoke()
+            if (response.succeeded) {
+                // TODO 데이터 처리
+                response.data
+                //
+                // Put
+                response.data?.forEach {
+                    val processingResult =
+                        findLocationProcessingUseCase.invoke(FindLocationProcessingUseCase.Param(it))
+                    if (processingResult.succeeded) {
+                        // CSV 저장할곳에 데이터 입력
+
+                    }
+                }
+            } else {
+
+            }
+        }
     }
 
     fun reset() {
-        resetDisplay()
         resetData()
+        resetDisplay()
     }
 
-    fun resetDisplay() {
+    private fun resetDisplay() {
         _logDataList.value = emptyList()
         _currentState.value = Constants.CS_BEFORE_TEST_DATA
         _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
@@ -66,7 +123,7 @@ class MainViewModel @Inject constructor(
         _queryImage.value = ""
     }
 
-    fun resetData() {
+    private fun resetData() {
         resetUseCase.deleteQueryPlan()
     }
 
@@ -77,11 +134,16 @@ class MainViewModel @Inject constructor(
     }
 
     fun startTest() {
-        startTestUseCase.startTest()
-//        viewModelScope.launch {
-//            startTestUseCase.startTest().collect {
-//                _currentState.postValue("emit $it")
-//            }
-//        }
+
+        viewModelScope.launch {
+            startTestUseCase.imageProcessing().onEach {
+                _currentState.postValue("${it.currentState}")
+                _baseImage.postValue("${it.baseImage}")
+                _queryImage.postValue("${it.queryImage}")
+                Log.d("_queryImage.postValue", "${it.queryImage}")
+            }.conflate().collect {
+
+            }
+        }
     }
 }

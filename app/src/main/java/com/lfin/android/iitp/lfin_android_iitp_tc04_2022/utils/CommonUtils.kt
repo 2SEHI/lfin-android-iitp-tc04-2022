@@ -11,4 +11,4 @@ import java.util.*
     /**
      * convert base64 to byteArray
      */
-    fun decodeBase64(encodedStr: String): String = String(Base64.getDecoder().decode(encodedStr))
+    fun decodeBase64(encodedStr: String): ByteArray = Base64.getDecoder().decode(encodedStr)
