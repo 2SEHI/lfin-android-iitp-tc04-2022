@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.RecyclerviewItemBinding
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
 
-class LogAdapter : ListAdapter<QueryPlanEntity, LogAdapter.ItemViewHolder>(COMPARATOR) {
+class LogAdapter : ListAdapter<String, LogAdapter.ItemViewHolder>(COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder =
         ItemViewHolder(
@@ -19,8 +19,7 @@ class LogAdapter : ListAdapter<QueryPlanEntity, LogAdapter.ItemViewHolder>(COMPA
         val item = getItem(position)
 
         holder.binding.apply {
-            title.text = item.b_file_name
-            description.text = item.metadata
+            title.text = item
         }
     }
 
@@ -28,11 +27,11 @@ class LogAdapter : ListAdapter<QueryPlanEntity, LogAdapter.ItemViewHolder>(COMPA
         RecyclerView.ViewHolder(binding.root)
 }
 
-val COMPARATOR = object : DiffUtil.ItemCallback<QueryPlanEntity>() {
-    override fun areItemsTheSame(oldItem: QueryPlanEntity, newItem: QueryPlanEntity): Boolean =
+val COMPARATOR = object : DiffUtil.ItemCallback<String>() {
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean =
         oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: QueryPlanEntity, newItem: QueryPlanEntity): Boolean =
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean =
         oldItem == newItem
 
 }

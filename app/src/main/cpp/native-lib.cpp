@@ -11,14 +11,16 @@ static char *buffer_log;
 static char *buffer_fullResult;
 
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT int JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_initializeModule(
         JNIEnv *env, jobject thiz) {
-    lpin::opencv::Initialize(0);
+    int result = lpin::opencv::Initialize(0);
 
     buffer_status = lpin::opencv::GetPtrOfString(0);
     buffer_log = lpin::opencv::GetPtrOfString(1);
     buffer_fullResult = lpin::opencv::GetPtrOfString(2);
+
+    return result;
 }
 
 extern "C"
@@ -83,9 +85,9 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
 
 jdouble GetNumberFromMetadata(jbyteArray decodedArray, jint idx)
 {
-    double *ptr = (double *)decodedArray;
+    double *decodePtr = (double *)decodedArray;
 
-    return ptr[idx];
+    return decodePtr[idx];
 }
 
 extern "C"
@@ -93,16 +95,20 @@ JNIEXPORT void JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_putMetadata(
         JNIEnv *env,
         jobject thiz,
-        jstring byte_array) {
-    const char *meta_data = env->GetStringUTFChars(byte_array, 0);
-
-    size_t length = strlen(meta_data);
-
-    env->ReleaseStringUTFChars(byte_array, meta_data);
-
-//    double *ptr = (double *)meta_data;
-//
-//    // Metadata
+        jbyteArray meta_data) {
+    LOG("result[0] %x", GetNumberFromMetadata(meta_data, 0));
+    LOG("result[1] %x", GetNumberFromMetadata(meta_data, 1));
+    LOG("result[2] %x", GetNumberFromMetadata(meta_data, 2));
+    LOG("result[3] %x", GetNumberFromMetadata(meta_data, 3));
     lpin::opencv::PutByteBlock((char *)meta_data, 32);
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_putMetadata2(
+        JNIEnv *env, jobject thiz, jstring byte_array) {
+    const char *meta_data = env->GetStringUTFChars(byte_array, 0);
+
+    env->ReleaseStringUTFChars(byte_array, meta_data);
+    lpin::opencv::PutByteBlock((char *)meta_data, 32);
+}

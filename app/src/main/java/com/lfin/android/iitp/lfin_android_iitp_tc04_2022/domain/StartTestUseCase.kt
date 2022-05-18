@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.OpenCVAdapter
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.model.PrintData
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.decodeBase64
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.flow
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -25,21 +27,25 @@ class StartTestUseCase @Inject constructor(
         val TAG: String = StartTestUseCase::class.java.simpleName
     }
 
-    fun startTest(){
-        imageProcessing()
-        saveCSV()
-    }
+//    fun startTest(){
+//        imageProcessing()
+//        saveCSV()
+//    }
 
-    private fun imageProcessing() {
+    fun imageProcessing() = flow<PrintData> {
         val imgDir = File("${context.filesDir}${File.separator}${Constants.IMAGE_DIR}")
         val queryPlanList = getQueryPlanUseCase.getQueryPlanList()
         var baseImagePath: String
         var queryImagePath: String
+        var printData = PrintData()
         for (queryPlan in queryPlanList) {
+
             baseImagePath = "$imgDir${File.separator}${queryPlan.b_file_name}"
             queryImagePath = "$imgDir${File.separator}${queryPlan.q_file_name}"
+            printData.baseImage = baseImagePath
+            printData.queryImage = queryImagePath
+            emit(printData)
             // TODO 이미지 화면 표시하기
-
             val baseBitmap =
                 BitmapFactory.decodeFile(baseImagePath)
             val queryBitmap =
@@ -47,21 +53,27 @@ class StartTestUseCase @Inject constructor(
             // TODO: initialize할 때 Trial 숫자 리셋해야함
             OpenCVAdapter.initializeModule()
             OpenCVAdapter.putBitmap(baseBitmap)
-            Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
 
+            printData.currentState = OpenCVAdapter.getPtrOfString(0)
+            emit(printData)
             OpenCVAdapter.putBitmap(queryBitmap)
-            Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+
+            printData.currentState = OpenCVAdapter.getPtrOfString(0)
+            emit(printData)
+
             // convert base64 to ByteArray
             val metaData = decodeBase64(queryPlan.metadata)
-
-            Log.d("${queryPlan.id} : ", metaData)
-            Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
-
+            // send MetaData
             OpenCVAdapter.putMetadata(metaData)
-            Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+            printData.currentState = OpenCVAdapter.getPtrOfString(0)
+            emit(printData)
 
+            // start imageProcessing
             OpenCVAdapter.imageProcessing()
-            Log.d(TAG,"${OpenCVAdapter.getPtrOfString(0)}")
+            printData.currentState = OpenCVAdapter.getPtrOfString(0)
+            emit(printData)
+
+            // get imageProcess Result for export CSV
             Log.d(TAG,"${OpenCVAdapter.getPtrOfString(1)}")
 
         }

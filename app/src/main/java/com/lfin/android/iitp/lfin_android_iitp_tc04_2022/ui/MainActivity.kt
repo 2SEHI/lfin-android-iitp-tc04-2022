@@ -18,13 +18,14 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.ActivityMai
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.model.PrintData
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
@@ -33,19 +34,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var pressedTime: Long = 0
     private val duration = Toast.LENGTH_SHORT
 
-    // 현재 Editor 에 표현된 데이터
-    private lateinit var printData: PrintData
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.vm = mainViewModel
 
         logAdapter = LogAdapter()
         binding.recyclerview.adapter = logAdapter
-
-        mainViewModel.reset()
 
         // 이미지처리결과 리스트 RecycleView 업데이트
         mainViewModel.logDataList.observe(this, Observer {
@@ -54,40 +51,31 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 logAdapter.submitList(it?.toMutableList())
             }
         })
-        // 테스트 로그 RecycleView 업데이트
+
+        // 진행상태 textView 업데이트
         mainViewModel.currentState.observe(this, Observer {
             CoroutineScope(Dispatchers.Main).launch {
                 binding.printStatus.text = it
             }
         })
-//        binding.vm?.setDisplay(this.printData)
-        // 데이터 가져오기 클릭
-        binding.loadDataBtn.setOnClickListener(this)
-        // 시험 시작 클릭
-        binding.startTestBtn.setOnClickListener(this)
-        // 시험 결과 내보내기 클릭
-        binding.sendResultBtn.setOnClickListener(this)
 
-    }
-
-    override fun onClick(view: View?) {
-        CoroutineScope(Dispatchers.Main).launch {
-            when (view) {
-
-                // 데이터 가져오기
-                binding.loadDataBtn -> {
-                    mainViewModel.readyForTest()
-                }
-                // 시험시작
-                binding.startTestBtn -> {
-                    mainViewModel.startTest()
-                }
-                // 결과 보내기
-                binding.sendResultBtn -> {
-//                    openFile()
-                }
+        // 다음 지시사항 textView 업데이트
+        mainViewModel.nextBehavior.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.printBehavior.text = it
             }
-        }
+        })
+
+        mainViewModel.baseImage.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.baseImage.setImageURI(it)
+            }
+        })
+        mainViewModel.queryImage.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.queryImage.setImageURI(it)
+            }
+        })
     }
 
     private fun sendFile(){
@@ -111,14 +99,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-            /**
+    /**
      * CSV파일을 공유하는 처리
      * 파일 선택
      */
     private fun openFile() {
-//        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
-                val csvDir = File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
-        val csvDirUri = Uri.fromFile(File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}"))
+
+        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
+//                val csvDir = File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
+//        val csvDirUri = Uri.fromFile(File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}"))
 
         Log.d(TAG, "csvDirUri - $csvDirUri")
         // 파일 선택 Intent
@@ -199,6 +188,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
+
     }
 
 }

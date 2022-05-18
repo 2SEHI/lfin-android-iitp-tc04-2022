@@ -144,7 +144,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
                     android:text="데이터 \n가져오기"
-
+                    android:onClick="@{ vm.dataLoadingStart }"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
                     app:layout_constraintStart_toStartOf="parent"
@@ -155,6 +155,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
+                    android:onClick="@{ vm.processingStart }"
                     android:text="시험 시작"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/sendResultBtn"
