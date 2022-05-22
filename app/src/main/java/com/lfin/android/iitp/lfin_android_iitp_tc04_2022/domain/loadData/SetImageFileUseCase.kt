@@ -1,4 +1,4 @@
-package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain
+package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,9 +11,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SetImageFileUseCase  @Inject constructor(
     private val imageFileRepository: ImageFileRepository
 ){
