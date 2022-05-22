@@ -1,8 +1,8 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils
 
 object Constants {
-    const val IMAGE_DIR = "images"
-    const val CSV_DIR = "csv"
+    const val IMAGE_DIR = "tc04/images"
+    const val CSV_DIR = "tc04/csv"
     const val CSV_FILE_NAME = "result_"
     const val CSV_FILE_TIME ="yyyy-MM-dd_HH:mm:ss"
 

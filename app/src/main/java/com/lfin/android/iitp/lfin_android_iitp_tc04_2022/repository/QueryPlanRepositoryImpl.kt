@@ -30,30 +30,32 @@ class QueryPlanRepositoryImpl @Inject constructor(
 
     override fun getAllQueryFile(): List<String> = queryPlanLocalDataSource.selectQueryFile()
 
-    override suspend fun insertAllQueryPlan() {
+    override suspend fun insertAllQueryPlan(): Boolean{
 
-            Log.d(TAG, "insertItem2 시작")
-            try {
-                // 이미지 메타데이터 가져와서 DB에 저장
-                networkApi.loadQueryPlanInfo(
-                    Constants.QUERY_PLAN
-                ).items.map {
-                    QueryPlanEntity(
-                        it.b_file_name,
-                        it.q_file_name,
-                        it.metadata
-                    )
-                }.apply {
-                    queryPlanLocalDataSource.insertAll(this)
-                    Log.d(TAG, "데이터 저장 개수: ${this.size}")
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, "${e.printStackTrace()}")
+        Log.d(TAG, "insertItem2 시작")
+        try {
+            // 이미지 메타데이터 가져와서 DB에 저장
+            networkApi.loadQueryPlanInfo(
+                Constants.QUERY_PLAN
+            ).items.map {
+                QueryPlanEntity(
+                    it.b_file_name,
+                    it.q_file_name,
+                    it.metadata
+                )
+            }.apply {
+                queryPlanLocalDataSource.insertAll(this)
+                Log.d(TAG, "데이터 저장 개수: ${queryPlanLocalDataSource.selectAll().size}")
             }
-
+            return true
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.printStackTrace()}")
+            return false
+        }
+        return true
     }
 
-    override fun deleteAllQueryPlan(){
+    override fun deleteAllQueryPlan() {
         queryPlanLocalDataSource.deleteAll()
     }
 

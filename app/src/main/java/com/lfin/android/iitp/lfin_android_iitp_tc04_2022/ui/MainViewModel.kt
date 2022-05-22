@@ -1,49 +1,47 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
-import android.content.Context
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.*
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.MainApplication
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetQueryPlanUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData.*
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.startTest.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.onEach
-import java.io.File
-import android.net.Uri
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.data
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.decodeBase64
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.succeeded
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val loadMetaData: LoadMetaDataUseCase,
+    private val downloadQueryPlanUseCase: DownloadQueryPlanUseCase,
+    private val saveFileNameUseCase: SaveFileNameUseCase,
+    private val getImageFileNameUseCase: GetImageFileNameUseCase,
+    private val downloadImageFileUseCase: DownloadImageFileUseCase,
+
     private val initializeModuleUseCase: InitializeModuleUseCase,
     private val putBaseImageUseCase: PutBaseImageUseCase,
     private val putQueryImageUseCase: PutQueryImageUseCase,
     private val putMetadataUseCase: PutMetadataUseCase,
     private val findLocationUseCase: FindLocationUseCase,
     private val getResultForDisplayUseCase: GetResultForDisplayUseCase,
+    private val getQueryPlanUseCase: GetQueryPlanUseCase,
 
-    private val startTestUseCase: StartTestUseCase,
     private val resetQueryPlanUseCase: ResetQueryPlanUseCase,
-    // ClearCsvDataUseCase
-    // PutCsvDataUseCase
-    // ExportCsvDataUseCase
-    // GetImageProcessingState
-    private val getQueryPlanUseCase: GetQueryPlanUseCaseSample,
-    private val findLocationProcessingUseCase: FindLocationProcessingUseCase
-) : ViewModel() {
+
+    ) : ViewModel() {
 
     companion object {
         val TAG: String = MainViewModel::class.java.simpleName
-
+        val imgDir = File("${MainApplication.applicationContext().filesDir}${File.separator}${Constants.IMAGE_DIR}")
     }
 
     private val _currentState =
@@ -65,8 +63,9 @@ class MainViewModel @Inject constructor(
     private val list = mutableListOf<String?>()
 
     init {
-
-
+        viewModelScope.launch {
+            resetQueryPlanUseCase.invoke()
+        }
         _logDataList.value = list
         _currentState.value = Constants.CS_BEFORE_TEST_DATA
         _nextBehavior.value = Constants.NB_CLICK_DATA_LOADING
@@ -79,7 +78,28 @@ class MainViewModel @Inject constructor(
      */
     val dataLoadingStart = View.OnClickListener {
         viewModelScope.launch {
-            loadMetaData.loadMetaData()
+            _currentState.postValue("queryPlan 다운로드 중")
+            _nextBehavior.postValue("")
+            // 서버에서 queryPlan 다운로드 후, DB에 저장
+            downloadQueryPlanUseCase.invoke()
+            _currentState.postValue("이미지 파일명 저장 중")
+            // 이미지 파일명 목록을 DB에 저장
+            saveFileNameUseCase.invoke()
+
+            // 이미지 파일명 목록 가져오기
+            val response = getImageFileNameUseCase.invoke()
+            if (response.succeeded) {
+                // 서버에서 이미지파일 다운로드 후, 디바이스에 저장
+                response.data?.forEach {
+                    _currentState.postValue("이미지 파일 <$it> 다운로드 중...")
+                    Log.d(TAG, it)
+
+                    _baseImage.postValue(downloadImageFileUseCase.invoke(DownloadImageFileUseCase.Param(it)).data)
+                }
+                _currentState.postValue("데이터 다운로드 완료")
+                _nextBehavior.postValue("시험 시작")
+
+            }
         }
     }
 
@@ -88,7 +108,6 @@ class MainViewModel @Inject constructor(
      */
     var processingStart = View.OnClickListener {
         viewModelScope.launch {
-            val imgDir = File("${context.filesDir}${File.separator}${Constants.IMAGE_DIR}")
 
             // 모듈 초기화
             val initializeReponse = initializeModuleUseCase.invoke()
@@ -121,7 +140,6 @@ class MainViewModel @Inject constructor(
                     list.add(getResultForDisplayUseCase.invoke().data)
                     _logDataList.postValue(list)
                 }
-
 
             } else {
 

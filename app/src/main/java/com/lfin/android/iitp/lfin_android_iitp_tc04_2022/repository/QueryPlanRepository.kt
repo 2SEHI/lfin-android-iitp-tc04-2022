@@ -14,7 +14,7 @@ interface QueryPlanRepository {
     fun getAllQueryFile(): List<String>
 
     // queryPlan 전체삽입
-    suspend fun insertAllQueryPlan()
+    suspend fun insertAllQueryPlan(): Boolean
 
     fun deleteAllQueryPlan()
 }
