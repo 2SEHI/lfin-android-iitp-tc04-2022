@@ -11,7 +11,8 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
 
 @Database(
     entities = [QueryPlanEntity::class, ImageFileEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun queryPlanDao(): QueryPlanDao
