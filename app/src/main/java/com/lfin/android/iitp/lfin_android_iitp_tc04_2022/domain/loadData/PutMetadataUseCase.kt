@@ -1,11 +1,10 @@
-package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain
+package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData
 
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.OpenCVAdapter
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.UseCase
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class PutMetadataUseCase @Inject constructor(
 ) : UseCase<PutMetadataUseCase.Param, String>(Dispatchers.IO) {
     data class Param(
