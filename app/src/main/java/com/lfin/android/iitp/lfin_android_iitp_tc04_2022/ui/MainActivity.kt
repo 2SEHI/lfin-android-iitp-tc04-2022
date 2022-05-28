@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
      * 파일 선택
      */
     private fun openFile() {
-        Log.d("File(MainViewModel.csvDir.path).exists() : ", "${ File(MainViewModel.csvDir.path).exists() }")
+        Log.d("openFile", "${ File(MainViewModel.csvDir.path).exists() }")
         val csvDirUri = Uri.parse(MainViewModel.csvDir.path)
 
         Log.d(TAG, "csvDirUri - $csvDirUri")
