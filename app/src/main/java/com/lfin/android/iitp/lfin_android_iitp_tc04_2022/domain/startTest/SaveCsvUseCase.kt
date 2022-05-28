@@ -16,6 +16,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class SaveCsvUseCase @Inject constructor(
@@ -26,11 +27,14 @@ class SaveCsvUseCase @Inject constructor(
         val csvDir = MainViewModel.csvDir
 
         if (!csvDir.exists()) {
+            Log.d("csvDir", csvDir.exists().toString())
             csvDir.mkdirs()
         }
 
         // saveCSV
-        val fileName = "result_${System.currentTimeMillis()}.csv"
+        val simpleDateFormat = SimpleDateFormat(Constants.CSV_FILE_TIME)
+        val resultTime = simpleDateFormat.format(System.currentTimeMillis())
+        val fileName = "result_$resultTime.csv"
         val csvPath = "${ MainViewModel.csvDir.path }${File.separator}$fileName"
         Log.d("exportPATH", csvPath)
         var fileWriter: FileWriter? = null
