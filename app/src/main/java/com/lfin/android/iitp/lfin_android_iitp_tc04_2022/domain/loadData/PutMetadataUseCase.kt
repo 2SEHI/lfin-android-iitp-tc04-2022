@@ -11,10 +11,6 @@ class PutMetadataUseCase @Inject constructor(
         val metadata: ByteArray
     )
 
-    companion object {
-        val TAG: String = PutMetadataUseCase::class.java.simpleName
-    }
-
     override suspend fun execute(param: Param): String {
         OpenCVAdapter.putMetadata(param.metadata)
         return OpenCVAdapter.getPtrOfString(1)

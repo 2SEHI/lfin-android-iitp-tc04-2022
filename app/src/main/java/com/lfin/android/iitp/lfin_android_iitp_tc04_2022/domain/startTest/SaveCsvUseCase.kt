@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.OpenCVAdapter
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.db.data.QueryPlanEntity
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui.MainViewModel
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Result
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.UseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.UseCaseNonParam
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
@@ -18,32 +20,26 @@ import javax.inject.Inject
 
 class SaveCsvUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
-) : UseCase<SaveCsvUseCase.Param, Boolean>(Dispatchers.IO) {
-    data class Param(
-        val queryPlanEntity: QueryPlanEntity
-    )
+) : UseCaseNonParam<Boolean>(Dispatchers.IO) {
 
-    companion object {
-        val TAG: String = SaveCsvUseCase::class.java.simpleName
-    }
-
-    override suspend fun execute(param: Param): Boolean {
-        val csvDir = File("${context.filesDir}${File.separator}${Constants.CSV_DIR}")
+    override suspend fun execute(): Boolean {
+        val csvDir = MainViewModel.csvDir
 
         if (!csvDir.exists()) {
             csvDir.mkdirs()
         }
 
         // saveCSV
-        val filename = "result_${System.currentTimeMillis()}.csv"
-        val csvPath = File("${csvDir.path}${File.separator}${filename}")
-
+        val fileName = "result_${System.currentTimeMillis()}.csv"
+        val csvPath = "${ MainViewModel.csvDir.path }${File.separator}$fileName"
+        Log.d("exportPATH", csvPath)
         var fileWriter: FileWriter? = null
         var buffer: BufferedWriter? = null
         try {
             fileWriter = FileWriter(csvPath)
             buffer = BufferedWriter(fileWriter)
             buffer.write(OpenCVAdapter.getPtrOfString(2))
+            Log.d("exportData", OpenCVAdapter.getPtrOfString(2))
             buffer.flush()
             true
         } catch (e: IOException) {

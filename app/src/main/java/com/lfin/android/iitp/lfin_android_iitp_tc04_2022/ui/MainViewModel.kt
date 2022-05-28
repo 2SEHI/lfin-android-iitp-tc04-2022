@@ -1,13 +1,21 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
+import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.MainApplication
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.OpenCVAdapter
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetQueryPlanUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.startTest.*
@@ -34,6 +42,7 @@ class MainViewModel @Inject constructor(
     private val findLocationUseCase: FindLocationUseCase,
     private val getResultForDisplayUseCase: GetResultForDisplayUseCase,
     private val getQueryPlanUseCase: GetQueryPlanUseCase,
+    private val saveCsvUseCase: SaveCsvUseCase,
 
     private val resetQueryPlanUseCase: ResetQueryPlanUseCase,
 
@@ -42,13 +51,16 @@ class MainViewModel @Inject constructor(
     companion object {
         val TAG: String = MainViewModel::class.java.simpleName
         val imgDir = File("${MainApplication.applicationContext().filesDir}${File.separator}${Constants.IMAGE_DIR}")
+        val csvDir = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
+//        val csvDir = File("${Environment.getExternalStorageDirectory()}${File.separator}${Constants.CSV_DIR}")
+
     }
 
-    private val _currentState =
+    val _currentState =
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
     val currentState: LiveData<String> get() = _currentState
 
-    private val _nextBehavior =
+    val _nextBehavior =
         MutableLiveData<String>().apply { value = Constants.NB_CLICK_DATA_LOADING }
     val nextBehavior: LiveData<String> get() = _nextBehavior
 
@@ -78,6 +90,8 @@ class MainViewModel @Inject constructor(
      */
     val dataLoadingStart = View.OnClickListener {
         viewModelScope.launch {
+            // 모듈 초기화
+            val initializeReponse = initializeModuleUseCase.invoke()
             _currentState.postValue("queryPlan 다운로드 중")
             _nextBehavior.postValue("")
             // 서버에서 queryPlan 다운로드 후, DB에 저장
@@ -89,9 +103,13 @@ class MainViewModel @Inject constructor(
             // 이미지 파일명 목록 가져오기
             val response = getImageFileNameUseCase.invoke()
             if (response.succeeded) {
+                var totalSize = response.data?.size
+                var current = 0
+
                 // 서버에서 이미지파일 다운로드 후, 디바이스에 저장
                 response.data?.forEach {
-                    _currentState.postValue("이미지 파일 <$it> 다운로드 중...")
+                    current++
+                    _currentState.postValue("이미지 파일 $current/$totalSize 다운로드 중...")
                     Log.d(TAG, it)
 
                     _baseImage.postValue(downloadImageFileUseCase.invoke(DownloadImageFileUseCase.Param(it)).data)
@@ -108,9 +126,8 @@ class MainViewModel @Inject constructor(
      */
     var processingStart = View.OnClickListener {
         viewModelScope.launch {
-
-            // 모듈 초기화
-            val initializeReponse = initializeModuleUseCase.invoke()
+            // TODO
+            OpenCVAdapter.restart()
 
             var baseImagePath: String
             var queryImagePath: String
@@ -140,7 +157,9 @@ class MainViewModel @Inject constructor(
                     list.add(getResultForDisplayUseCase.invoke().data)
                     _logDataList.postValue(list)
                 }
-
+                saveCsvUseCase.invoke()
+//                _currentState.postValue("시험 완료")
+                _nextBehavior.postValue("시험 결과 내보내기")
             } else {
 
             }

@@ -8,9 +8,6 @@ import javax.inject.Inject
 class ResetQueryPlanUseCase @Inject constructor(
     private val queryPlanRepository: QueryPlanRepository,
 ) : UseCaseNonParam<Boolean>(Dispatchers.IO) {
-    companion object {
-        val TAG: String = ResetQueryPlanUseCase::class.java.simpleName
-    }
 
     override suspend fun execute(): Boolean {
         queryPlanRepository.deleteAllQueryPlan()

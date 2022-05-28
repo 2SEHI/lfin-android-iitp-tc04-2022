@@ -10,7 +10,7 @@ class FindLocationUseCase  @Inject constructor(
 
     override suspend fun execute(): String {
         OpenCVAdapter.imageProcessing()
-        return OpenCVAdapter.getPtrOfString(1)
+        return OpenCVAdapter.getPtrOfString(0)
     }
 
 }

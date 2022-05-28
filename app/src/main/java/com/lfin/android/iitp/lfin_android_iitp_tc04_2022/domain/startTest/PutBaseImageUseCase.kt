@@ -18,7 +18,7 @@ class PutBaseImageUseCase @Inject constructor(
 
     override suspend fun execute(param: Param): String {
         OpenCVAdapter.putBitmap(param.baseBitmap)
-        return OpenCVAdapter.getPtrOfString(1)
+        return OpenCVAdapter.getPtrOfString(0)
     }
 
 }
