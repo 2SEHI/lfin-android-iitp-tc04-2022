@@ -22,6 +22,10 @@ namespace lpin
 			~Constants() noexcept = delete;
 
 		public:
+			static constexpr int numberOfTrials = 1000;
+
+
+
 			// 모듈 내부에서 사용하는 이미지의 가로 길이입니다.
 			static constexpr int base_img_width = 256;
 
@@ -54,11 +58,12 @@ namespace lpin
 		{
 			Not_Defined = 0,
 			Busy = 1,
-			WaitFor_BaseImage = 2,
-			WaitFor_QueryImage = 3,
-			WaitFor_ByteBlock = 4,
-			Ready_ToStartTrial = 5,
-			Completed = 6,
+			Initialized = 2,
+			WaitFor_BaseImage = 3,
+			WaitFor_QueryImage = 4,
+			WaitFor_ByteBlock = 5,
+			Ready_ToStartTrial = 6,
+			Completed = Initialized,
 		};
 
 		enum GetPtrOfString_RequestCode : int
@@ -83,13 +88,19 @@ namespace lpin
 		// TODO - Put 0 when calling this function. Otherwise it will fail.
 		int Initialize(int taskCode = 0);
 
-		// 1, 2. Send bitmap data to module. Returns non-zero if failed.
+		// 6. Start/restart a set of trials. Returns non-zero if failed.
+		int Restart();
+
+		// 1. Start/restart a set of trials. Returns non-zero if failed.
+		inline int Start() { return Restart(); }
+
+		// 2, 3. Send bitmap data to module. Returns non-zero if failed.
 		int PutImage(void *bitmap, int width, int height);
 
-		// 3. Send byte block to module. Returns non-zero if failed.
-		int PutByteBlock(char *data, int length);
+		// 4. Send byte block to module. Returns non-zero if failed.
+		int PutByteBlock(void *data, int length);
 
-		// 4. Start a trial. Returns non-zero if failed.
+		// 5. Start a trial. Returns non-zero if failed.
 		int Process();
 	}
 }

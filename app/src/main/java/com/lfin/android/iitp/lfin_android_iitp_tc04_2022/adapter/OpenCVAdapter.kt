@@ -7,6 +7,7 @@ class OpenCVAdapter {
         init {
             System.loadLibrary("lfin_android_iitp_tc04_2022")
         }
+        external fun restart()
         external fun initializeModule(): Int
         external fun putBitmap(bitmap: Bitmap): String
         external fun putMetadata(byteArray: ByteArray)

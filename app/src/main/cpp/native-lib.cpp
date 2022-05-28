@@ -100,7 +100,7 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     LOG("result[1] %x", GetNumberFromMetadata(meta_data, 1));
     LOG("result[2] %x", GetNumberFromMetadata(meta_data, 2));
     LOG("result[3] %x", GetNumberFromMetadata(meta_data, 3));
-    lpin::opencv::PutByteBlock((char *)meta_data, 32);
+    lpin::opencv::PutByteBlock(meta_data, 32);
 }
 
 extern "C"
@@ -111,4 +111,12 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
 
     env->ReleaseStringUTFChars(byte_array, meta_data);
     lpin::opencv::PutByteBlock((char *)meta_data, 32);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_restart(
+        JNIEnv *env,
+        jobject thiz) {
+    lpin::opencv::Restart();
+
 }

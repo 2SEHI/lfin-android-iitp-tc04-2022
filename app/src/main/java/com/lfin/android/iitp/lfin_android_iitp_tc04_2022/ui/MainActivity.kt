@@ -2,10 +2,12 @@ package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.EXTRA_ALLOW_MULTIPLE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.LogAdapter
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.ActivityMainBinding
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.model.PrintData
@@ -72,31 +75,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
         mainViewModel.queryImage.observe(this, Observer {
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).launch    {
                 binding.queryImage.setImageURI(it)
             }
         })
-    }
-
-    private fun sendFile(){
-        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_OPEN_DOCUMENT_TREE
-            putExtra(Intent.EXTRA_STREAM, csvDirUri)
+        binding.sendResultBtn.setOnClickListener {
+            openFile()
         }
-        getResult.launch(shareIntent)
-    }
-
-    /**
-     * CSV파일을 공유하는 처리
-     */
-    private var getResult = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK){
-            Log.d(TAG,"")
-        }
-
     }
 
     /**
@@ -104,23 +89,17 @@ class MainActivity : AppCompatActivity() {
      * 파일 선택
      */
     private fun openFile() {
-
-        val csvDirUri = Uri.parse("${filesDir}${File.separator}${Constants.CSV_DIR}${File.separator}")
-//                val csvDir = File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}${File.separator}${Constants.CSV_DIR}")
-//        val csvDirUri = Uri.fromFile(File("${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}"))
+        Log.d("File(MainViewModel.csvDir.path).exists() : ", "${ File(MainViewModel.csvDir.path).exists() }")
+        val csvDirUri = Uri.parse(MainViewModel.csvDir.path)
 
         Log.d(TAG, "csvDirUri - $csvDirUri")
         // 파일 선택 Intent
         val pickIntent = Intent().apply {
-            action = Intent.ACTION_OPEN_DOCUMENT_TREE // 권한 설정 없이도 파일을 공용저장소에서 읽어올 수 있음
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-//            type = "text/*"
-//            setDataAndType(csvDirUri, "*/*")
-//            addCategory(Intent.CATEGORY_OPENABLE) // open가능한 것들로 카테고리를 묶기
-            putExtra(
-                DocumentsContract.EXTRA_INITIAL_URI,
-                csvDirUri
-            ) // 파일 선택 도구가 처음 로드될 때 표시해야 하는 파일이나 디렉터리의 URI
+            action = Intent.ACTION_OPEN_DOCUMENT // 권한 설정 없이도 파일을 공용저장소에서 읽어올 수 있음
+            type = "text/*"
+            addCategory(Intent.CATEGORY_OPENABLE) // open가능한 것들로 카테고리를 묶기
+            putExtra(EXTRA_INITIAL_URI, csvDirUri) // 파일 선택 도구가 처음 로드될 때 표시해야 하는 파일이나 디렉터리의 URI
+            putExtra(EXTRA_ALLOW_MULTIPLE, true) // 파일 선택 도구가 처음 로드될 때 표시해야 하는 파일이나 디렉터리의 URI
 
         }
         // Intent를 처리할 수 있는 앱이 존재하는 경우
@@ -129,6 +108,28 @@ class MainActivity : AppCompatActivity() {
             sendLauncher.launch(Intent.createChooser(pickIntent, "Choose file"))
         }
     }
+//
+//    private fun openFile() {
+//        Log.d("File(MainViewModel.csvDir.path).exists() : ", "${ File(MainViewModel.csvDir.path).exists() }")
+//        val csvDirUri = Uri.parse(MainViewModel.csvDir.path)
+//
+//        Log.d(TAG, "csvDirUri - $csvDirUri")
+//        // 파일 선택 Intent
+//        val pickIntent = Intent().apply {
+//            action = Intent.ACTION_SEND_MULTIPLE // 권한 설정 없이도 파일을 공용저장소에서 읽어올 수 있음
+//            type = "text/*"
+////            addCategory(Intent.CATEGORY_OPENABLE) // open가능한 것들로 카테고리를 묶기
+//            putExtra(EXTRA_INITIAL_URI, csvDirUri) // 파일 선택 도구가 처음 로드될 때 표시해야 하는 파일이나 디렉터리의 URI
+//            putExtra(EXTRA_ALLOW_MULTIPLE, true) // 파일 선택 도구가 처음 로드될 때 표시해야 하는 파일이나 디렉터리의 URI
+//
+//        }
+//        // Intent를 처리할 수 있는 앱이 존재하는 경우
+//        if (intent.resolveActivity(packageManager) != null) {
+//            Intent.createChooser(pickIntent, "Choose file")
+//            // CSV파일 공유 처리 호출
+//            startActivity()
+//        }
+//    }
 
     /**
      * CSV파일을 공유하는 처리
@@ -137,22 +138,43 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         try {
-            // TODO send기능은 작동하지만, 한번 보냈던 방식을 기억하고 있음
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result?.data
                 when {
                     data?.data != null -> {
+//                        var uriList = ArrayList<Uri>()
+//                        val clipdata2 =  data?.clipData!!.itemCount
+//                        Log.d("clipdata2", "$clipdata2")
+//                        val clipdata =  data?.clipData
+//                        Log.d("ddd", "${clipdata}")
+//                        if (clipdata != null) {
+//                            val cnt = clipdata.itemCount
+//
+//                            for (i in 0..cnt){
+//                                Log.d("ddd", "${clipdata.getItemAt(i).uri}")
+//                                uriList.add(clipdata.getItemAt(i).uri)
+//
+//                            }
+//                            // TODO
+//                        }
+
+
                         val uri = data?.data as Uri
                         Log.d(TAG, "uri: $uri")
                         val sendIntent = Intent().apply {
-                            action = Intent.ACTION_SEND_MULTIPLE
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            action = Intent.ACTION_SEND
+//                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             type = "text/*"
                             putExtra(Intent.EXTRA_STREAM, uri)
+//                            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
                         }
 
                         if (sendIntent.resolveActivity(packageManager) != null) {
+
                             startActivity(sendIntent)
+
+                            mainViewModel._currentState.postValue("파일 전송 완료")
+                            mainViewModel._nextBehavior.postValue("시험 결과 확인")
                         } else {
                             Toast.makeText(this@MainActivity, "전송 실패", Toast.LENGTH_SHORT).show()
                         }

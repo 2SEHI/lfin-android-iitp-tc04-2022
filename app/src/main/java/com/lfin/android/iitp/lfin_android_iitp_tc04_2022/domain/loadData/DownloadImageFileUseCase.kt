@@ -31,7 +31,8 @@ class DownloadImageFileUseCase @Inject constructor(
             imgDir.mkdirs()
         }
         var responseBody: ResponseBody?
-        val imgPath = File(imgDir, param.fileName)
+        val imgPath = File("${MainViewModel.imgDir.path }${File.separator}${param.fileName}")
+//        val imgPath = File(imgDir, param.fileName)
         // 동일한 이미지 파일이 존재하는 경우 삭제
         if (imgPath.exists()) {
             imgPath.delete()
