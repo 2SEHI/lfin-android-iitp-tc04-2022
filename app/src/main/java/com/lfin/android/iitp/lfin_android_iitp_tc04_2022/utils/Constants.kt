@@ -4,7 +4,7 @@ object Constants {
     const val IMAGE_DIR = "tc04/images"
     const val CSV_DIR = "tc04/csv"
     const val CSV_FILE_NAME = "result_"
-    const val CSV_FILE_TIME ="yyyy-MM-dd_HH:mm:ss"
+    const val CSV_FILE_TIME ="yyyy-MM-dd_HHmmss"
 
     const val BASE_URL = "https://22tta.lfin.kr"
     const val QUERY_PLAN = "queryPlan_v1.json"

@@ -83,7 +83,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:background="@drawable/draw_border"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="4dp">
 
                 <ImageView
                     android:id="@+id/base_image"
@@ -94,7 +95,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="5dp"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="base"
                     android:textAlignment="center" />
@@ -105,7 +106,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:background="@drawable/draw_border"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="4dp">
 
                 <ImageView
                     android:id="@+id/query_image"
@@ -116,7 +118,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="5dp"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="query"
                     android:textAlignment="center" />
