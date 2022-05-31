@@ -8,7 +8,7 @@ object Constants {
 
     const val BASE_URL = "https://22tta.lfin.kr"
     const val QUERY_PLAN = "queryPlan_v1.json"
-
+    const val REQUEST_EXTERNAL_STORAGE = 1
     /**
      * CurrentState Message
      */
