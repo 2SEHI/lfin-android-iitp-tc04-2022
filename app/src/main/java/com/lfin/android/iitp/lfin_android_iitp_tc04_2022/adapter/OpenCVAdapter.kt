@@ -13,7 +13,7 @@ class OpenCVAdapter {
         external fun putMetadata(byteArray: ByteArray)
         external fun putMetadata2(byteArray: String)
         external fun imageProcessing()
-        // 0:currentState 1:log 2:csvLinesForExport
+        // 0:currentState 1:logLine 2:csvLinesForExport
         external fun getPtrOfString(requestCode: Int): String
     }
 }

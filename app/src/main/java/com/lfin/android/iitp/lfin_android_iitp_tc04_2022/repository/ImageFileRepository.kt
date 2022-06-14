@@ -10,4 +10,6 @@ interface ImageFileRepository {
     suspend fun insertAllImageFile(imageFileList: List<ImageFileEntity>)
 
     suspend fun loadImageFile(fileName: String): ResponseBody?
+
+    fun deleteAllImageFile()
 }

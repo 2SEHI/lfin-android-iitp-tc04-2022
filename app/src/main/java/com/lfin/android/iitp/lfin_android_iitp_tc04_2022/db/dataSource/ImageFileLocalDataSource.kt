@@ -8,4 +8,5 @@ interface ImageFileLocalDataSource {
 
     fun insertAll(value: List<ImageFileEntity>)
 
+    fun deleteAll()
 }

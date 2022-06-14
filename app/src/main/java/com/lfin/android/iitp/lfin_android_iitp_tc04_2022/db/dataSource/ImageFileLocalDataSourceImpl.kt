@@ -13,4 +13,8 @@ class ImageFileLocalDataSourceImpl @Inject constructor(
     override fun insertAll(value: List<ImageFileEntity>) {
         dao.insertAll(value)
     }
+
+    override fun deleteAll() {
+        dao.deleteAll()
+    }
 }

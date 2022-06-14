@@ -1,22 +1,17 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
-import android.app.Activity
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.MainApplication
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.OpenCVAdapter
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.ResetQueryPlanUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.resetDatabase.ResetMetadataUseCase
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.resetDatabase.ResetQueryPlanUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.startTest.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
@@ -45,6 +40,7 @@ class MainViewModel @Inject constructor(
     private val saveCsvUseCase: SaveCsvUseCase,
 
     private val resetQueryPlanUseCase: ResetQueryPlanUseCase,
+    private val resetMetadataUseCase: ResetMetadataUseCase,
 
     ) : ViewModel() {
 
@@ -76,7 +72,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            resetQueryPlanUseCase.invoke()
+//            resetQueryPlanUseCase.invoke()
         }
         _logDataList.value = list
         _currentState.value = Constants.CS_BEFORE_TEST_DATA
@@ -168,7 +164,8 @@ class MainViewModel @Inject constructor(
 
     fun reset() {
         viewModelScope.launch {
-            resetQueryPlanUseCase.invoke()
+//            resetQueryPlanUseCase.invoke()
+//            resetMetadataUseCase.invoke()
         }
     }
 

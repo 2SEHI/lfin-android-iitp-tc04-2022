@@ -25,4 +25,8 @@ class ImageFileRepositoryImpl @Inject constructor(
     override suspend fun loadImageFile(fileName: String): ResponseBody? {
         return networkApi.downloadImage(fileName).body()
     }
+
+    override fun deleteAllImageFile() {
+        imageFileLocalDataSource.deleteAll()
+    }
 }

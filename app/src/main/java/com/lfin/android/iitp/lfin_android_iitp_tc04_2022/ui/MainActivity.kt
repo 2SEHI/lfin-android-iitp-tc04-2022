@@ -1,27 +1,25 @@
 package com.lfin.android.iitp.lfin_android_iitp_tc04_2022.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.EXTRA_ALLOW_MULTIPLE
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
 import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.LogAdapter
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.ActivityMainBinding
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.model.PrintData
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,13 +37,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mainViewModel.reset()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.vm = mainViewModel
 
         logAdapter = LogAdapter()
         binding.recyclerview.adapter = logAdapter
+
+
+        // 외부 접근 메모리 접근 가능할 경우,
+        // json, 이미지 가져오기
+        if (!checkPersmission()) {
+            Log.d("TAG", "카메라 허가 받아야함")
+            requestPermission()
+        }
 
         // 이미지처리결과 리스트 RecycleView 업데이트
         mainViewModel.logDataList.observe(this, Observer {
@@ -82,6 +88,45 @@ class MainActivity : AppCompatActivity() {
         binding.sendResultBtn.setOnClickListener {
             openFile()
         }
+    }
+
+    // 권한요청 결과
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        var isAllGranted = true
+        for (grantResult in grantResults) {
+            isAllGranted = isAllGranted and (grantResult == PackageManager.PERMISSION_GRANTED)
+        }
+        if (!isAllGranted) {
+            Toast.makeText(this@MainActivity, "권한 거부", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // 외부 메모리 접근 권한 체크
+    private fun checkPersmission(): Boolean {
+        return (ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED)
+    }
+
+    // 외부 메모리 접근 권한 요청
+    private fun requestPermission() {
+        Log.d("권한확인", "OK")
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ), Constants.REQUEST_EXTERNAL_STORAGE
+        )
     }
 
     /**
@@ -196,6 +241,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, Constants.BACK_PROCESS, duration).show()
         } else {
             super.onBackPressed()
+            finish()
         }
     }
 

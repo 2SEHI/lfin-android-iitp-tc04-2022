@@ -7,7 +7,11 @@ object Constants {
     const val CSV_FILE_TIME ="yyyy-MM-dd_HHmmss"
 
     const val BASE_URL = "https://22tta.lfin.kr"
-    const val QUERY_PLAN = "queryPlan_v1.json"
+    // 10000건 실행시
+    const val QUERY_PLAN = "queryPlan_v1_10000.json"
+    // 1000건 실행시 주석 해제
+//    const val QUERY_PLAN = "queryPlan_v1.json"
+
     const val REQUEST_EXTERNAL_STORAGE = 1
     /**
      * CurrentState Message

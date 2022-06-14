@@ -17,6 +17,11 @@ import javax.inject.Inject
  */
 class SaveImageFileUseCase @Inject constructor(
 ) : UseCase<SaveImageFileUseCase.Param, Boolean>(Dispatchers.IO) {
+
+    companion object {
+        val TAG: String = SaveImageFileUseCase::class.java.simpleName
+    }
+
     data class Param(
         val body: ResponseBody?,
         val imgPath: File,
@@ -32,13 +37,13 @@ class SaveImageFileUseCase @Inject constructor(
 
             try {
 
-                Log.d(SetImageFileUseCase.TAG, "이미지 파일 저장경로: $param.imgPath")
+                Log.d(TAG, "이미지 파일 저장경로: $param.imgPath")
                 inputStream = param.body.byteStream()
                 var bitmap = BitmapFactory.decodeStream(inputStream)
                 outputStream = FileOutputStream(param.imgPath)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream.flush()
-                Log.d(SetImageFileUseCase.TAG, "saveBitmap End")
+                Log.d(TAG, "saveBitmap End")
             } catch (e: IOException) {
                 Log.d("saveFile", e.toString())
                 return false

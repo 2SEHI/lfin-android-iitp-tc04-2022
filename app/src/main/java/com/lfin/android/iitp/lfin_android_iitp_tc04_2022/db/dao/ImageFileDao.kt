@@ -14,4 +14,7 @@ interface ImageFileDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(value: List<ImageFileEntity>)
+
+    @Query("DELETE FROM image_file")
+    fun deleteAll()
 }

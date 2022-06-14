@@ -8,18 +8,18 @@
 
 static char *buffer_status;
 static char *buffer_log;
+// c++20 버전업 대응
+//static char *buffer_logLine;
 static char *buffer_fullResult;
 
 extern "C"
 JNIEXPORT int JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_initializeModule(
         JNIEnv *env, jobject thiz) {
+    LOG("Initialize 시작", "--------------------------");
     int result = lpin::opencv::Initialize(0);
 
-    buffer_status = lpin::opencv::GetPtrOfString(0);
-    buffer_log = lpin::opencv::GetPtrOfString(1);
-    buffer_fullResult = lpin::opencv::GetPtrOfString(2);
-
+    LOG("Initialize 끝", "--------------------------");
     return result;
 }
 
@@ -30,6 +30,7 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
         jobject thiz,
         jobject bitmap) {
 
+    LOG("putBitmap 시작", "--------------------------");
     AndroidBitmapInfo info;
     int ret = AndroidBitmap_getInfo(env, bitmap, &info);
     if(ret != ANDROID_BITMAP_RESULT_SUCCESS)  {
@@ -42,6 +43,8 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     }
 
     // PutImage
+    // c++20 버전업 대응
+//    lpin::opencv::PutImage(&ptr);
     lpin::opencv::PutImage(&ptr, info.width, info.height);
     LOG("Image size --> width: %d, height: %d", info.width, info.height);
     // unlock
@@ -100,6 +103,9 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     LOG("result[1] %x", GetNumberFromMetadata(meta_data, 1));
     LOG("result[2] %x", GetNumberFromMetadata(meta_data, 2));
     LOG("result[3] %x", GetNumberFromMetadata(meta_data, 3));
+
+    // c++20 버전업 대응
+    // lpin::opencv::PutByteBlock(meta_data);
     lpin::opencv::PutByteBlock(meta_data, 32);
 }
 
@@ -110,6 +116,8 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     const char *meta_data = env->GetStringUTFChars(byte_array, 0);
 
     env->ReleaseStringUTFChars(byte_array, meta_data);
+    // c++20 버전업 대응
+    // lpin::opencv::PutByteBlock((char *)meta_data);
     lpin::opencv::PutByteBlock((char *)meta_data, 32);
 }
 extern "C"
