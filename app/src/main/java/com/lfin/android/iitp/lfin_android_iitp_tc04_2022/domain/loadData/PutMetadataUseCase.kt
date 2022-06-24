@@ -5,6 +5,9 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.UseCase
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
+/**
+ * OpenCV모듈에 metadata 넣기
+ */
 class PutMetadataUseCase @Inject constructor(
 ) : UseCase<PutMetadataUseCase.Param, String>(Dispatchers.IO) {
     data class Param(
@@ -13,7 +16,8 @@ class PutMetadataUseCase @Inject constructor(
 
     override suspend fun execute(param: Param): String {
         OpenCVAdapter.putMetadata(param.metadata)
-        return OpenCVAdapter.getPtrOfString(1)
+        // status출력
+        return OpenCVAdapter.getPtrOfString(0)
     }
 
 }

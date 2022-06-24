@@ -10,11 +10,11 @@ android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
     // c++20 버전업 대응
-//    ndkVersion '24.0.8215888'
+    ndkVersion '24.0.8215888'
 
     defaultConfig {
         applicationId "com.lfin.android.iitp.lfin_android_iitp_tc04_2022"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 31
         versionCode 1
         versionName "0.0.1"
@@ -24,8 +24,8 @@ android {
         externalNativeBuild {
             cmake {
                 // c++20 버전업
-//              cppFlags '-std=c++20'
-                cppFlags '-std=c++17'
+              cppFlags '-std=c++20'
+//                cppFlags '-std=c++17'
 
                 arguments "-DANDROID_STL=c++_shared"
             }
@@ -36,6 +36,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            jniDebuggable true
         }
     }
     compileOptions {

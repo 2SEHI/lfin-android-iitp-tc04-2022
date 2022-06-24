@@ -63,8 +63,16 @@ class MainViewModel @Inject constructor(
     private val _baseImage = MutableLiveData<Uri>()
     val baseImage = _baseImage
 
+    private val _baseFileName =
+        MutableLiveData<String>().apply { value = "" }
+    val baseFileName: LiveData<String> get() = _baseFileName
+
     private val _queryImage = MutableLiveData<Uri>()
     val queryImage = _queryImage
+
+    private val _queryFileName =
+        MutableLiveData<String>().apply { value = "" }
+    val queryFileName: LiveData<String> get() = _queryFileName
 
     private val _logDataList = MutableLiveData<List<String?>>()
     val logDataList: LiveData<List<String?>> = _logDataList
@@ -72,7 +80,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-//            resetQueryPlanUseCase.invoke()
+            resetQueryPlanUseCase.invoke()
         }
         _logDataList.value = list
         _currentState.value = Constants.CS_BEFORE_TEST_DATA
@@ -137,8 +145,13 @@ class MainViewModel @Inject constructor(
                     baseImagePath = "$imgDir${File.separator}${it.b_file_name}"
                     queryImagePath = "$imgDir${File.separator}${it.q_file_name}"
 
+                    // 이미지 출력
                     _baseImage.postValue(Uri.fromFile(File(baseImagePath)))
                     _queryImage.postValue(Uri.fromFile(File(queryImagePath)))
+                    // 파일명 출력
+                    _baseFileName.postValue(it.b_file_name)
+                    _queryFileName.postValue(it.q_file_name)
+
 //                    delay(500L)
                     val baseBitmap = BitmapFactory.decodeFile(baseImagePath)
                     val queryBitmap = BitmapFactory.decodeFile(queryImagePath)
@@ -146,6 +159,7 @@ class MainViewModel @Inject constructor(
                     _currentState.postValue(putBaseImageUseCase.invoke(PutBaseImageUseCase.Param(baseBitmap)).data)
                     _currentState.postValue(putQueryImageUseCase.invoke(PutQueryImageUseCase.Param(queryBitmap)).data)
 
+                    Log.d("original metadata: ", it.metadata)
                     // convert base64 to ByteArray
                     val metaData = decodeBase64(it.metadata)
                     _currentState.postValue(putMetadataUseCase.invoke(PutMetadataUseCase.Param(metaData)).data)
@@ -164,8 +178,8 @@ class MainViewModel @Inject constructor(
 
     fun reset() {
         viewModelScope.launch {
-//            resetQueryPlanUseCase.invoke()
-//            resetMetadataUseCase.invoke()
+            resetQueryPlanUseCase.invoke()
+            resetMetadataUseCase.invoke()
         }
     }
 

@@ -85,6 +85,17 @@ class MainActivity : AppCompatActivity() {
                 binding.queryImage.setImageURI(it)
             }
         })
+
+        mainViewModel.baseFileName.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.baseFileName.text = it
+            }
+        })
+        mainViewModel.queryFileName.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch    {
+                binding.queryFileName.text = it
+            }
+        })
         binding.sendResultBtn.setOnClickListener {
             openFile()
         }

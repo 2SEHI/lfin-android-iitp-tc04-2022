@@ -79,19 +79,10 @@
             android:layout_weight="3">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:background="@drawable/draw_border"
-                android:orientation="vertical"
-                android:padding="4dp">
-
-                <ImageView
-                    android:id="@+id/base_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="9"
-                    android:src="@{ vm.baseImage }" />
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -99,29 +90,66 @@
                     android:layout_weight="1"
                     android:text="base"
                     android:textAlignment="center" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/draw_border"
-                android:orientation="vertical"
-                android:padding="4dp">
-
-                <ImageView
-                    android:id="@+id/query_image"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="9"
-                    android:src="@{ vm.queryImage }" />
+                    android:background="@drawable/draw_border"
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
+                    <ImageView
+                        android:id="@+id/base_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="9"
+                        android:src="@{ vm.baseImage }" />
+
+                    <TextView
+                        android:id="@+id/base_file_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="center" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="query"
                     android:textAlignment="center" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/draw_border"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:id="@+id/query_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="9"
+                        android:src="@{ vm.queryImage }" />
+
+                    <TextView
+                        android:id="@+id/query_file_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="center" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -145,8 +173,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
-                    android:text="데이터 \n가져오기"
                     android:onClick="@{ vm.dataLoadingStart }"
+                    android:text="데이터 \n가져오기"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
                     app:layout_constraintStart_toStartOf="parent"
