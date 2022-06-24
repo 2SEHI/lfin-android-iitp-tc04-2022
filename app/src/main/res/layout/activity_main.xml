@@ -19,206 +19,239 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorOnPrimary">
+
+            <TextView
+                android:id="@+id/bar_findText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="TC04"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_centerVertical="true"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/status_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="진행 상태: "
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/printStatus"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:text="@{vm.currentState}"
-                android:textSize="20dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_centerVertical="true"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/behavior_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="다음 지시사항: "
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/printBehavior"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:text="@{vm.nextBehavior}"
-                android:textSize="20dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3">
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="base"
-                    android:textAlignment="center" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="9"
-                    android:background="@drawable/draw_border"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <ImageView
-                        android:id="@+id/base_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="9"
-                        android:src="@{ vm.baseImage }" />
-
-                    <TextView
-                        android:id="@+id/base_file_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="center" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="query"
-                    android:textAlignment="center" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="9"
-                    android:background="@drawable/draw_border"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <ImageView
-                        android:id="@+id/query_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="9"
-                        android:src="@{ vm.queryImage }" />
-
-                    <TextView
-                        android:id="@+id/query_file_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="center" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_centerVertical="true"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_centerVertical="true"
+                android:layout_weight="1"
                 android:gravity="center"
-                tools:context=".MainActivity">
+                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/loadDataBtn"
+                <TextView
+                    android:id="@+id/status_title"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="5dp"
-                    android:onClick="@{ vm.dataLoadingStart }"
-                    android:text="데이터 \n가져오기"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="진행 상태: "
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/startTestBtn"
+                <TextView
+                    android:id="@+id/printStatus"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="5dp"
-                    android:onClick="@{ vm.processingStart }"
-                    android:text="시험 시작"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/sendResultBtn"
-                    app:layout_constraintStart_toEndOf="@+id/loadDataBtn"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="@{vm.currentState}"
+                    android:textSize="17dp"/>
+            </LinearLayout>
 
-                <Button
-                    android:id="@+id/sendResultBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="5dp"
-                    android:text="시험 결과\n내보내기"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/startTestBtn"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:background="@drawable/draw_border">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/recyclerview_item">
+                android:layout_height="0dp"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            </androidx.recyclerview.widget.RecyclerView>
+                <TextView
+                    android:id="@+id/behavior_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="다음 지시사항: "
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/printBehavior"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="@{vm.nextBehavior}"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="base"
+                        android:textAlignment="center"
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="9"
+                        android:background="@drawable/draw_border"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:id="@+id/base_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="9"
+                            android:src="@{ vm.baseImage }" />
+
+                        <TextView
+                            android:id="@+id/base_file_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="center" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="query"
+                        android:textAlignment="center"
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="9"
+                        android:background="@drawable/draw_border"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:id="@+id/query_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="9"
+                            android:src="@{ vm.queryImage }" />
+
+                        <TextView
+                            android:id="@+id/query_file_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="center" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    tools:context=".MainActivity">
+
+                    <Button
+                        android:id="@+id/loadDataBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="5dp"
+                        android:onClick="@{ vm.dataLoadingStart }"
+                        android:text="데이터 \n가져오기"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/startTestBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="5dp"
+                        android:onClick="@{ vm.processingStart }"
+                        android:text="시험 시작"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/sendResultBtn"
+                        app:layout_constraintStart_toEndOf="@+id/loadDataBtn"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/sendResultBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="시험 결과\n내보내기"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/startTestBtn"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:background="@drawable/draw_border"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/recyclerview_item">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

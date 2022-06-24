@@ -161,8 +161,9 @@ class MainViewModel @Inject constructor(
 
                     Log.d("original metadata: ", it.metadata)
                     // convert base64 to ByteArray
-                    val metaData = decodeBase64(it.metadata)
-                    _currentState.postValue(putMetadataUseCase.invoke(PutMetadataUseCase.Param(metaData)).data)
+                    val metadata = decodeBase64(it.metadata)
+                    Log.d("original metadata: ", metadata.toString(Charsets.UTF_8))
+                    _currentState.postValue(putMetadataUseCase.invoke(PutMetadataUseCase.Param(metadata)).data)
                     _currentState.postValue(findLocationUseCase.invoke().data)
                     list.add(getResultForDisplayUseCase.invoke().data)
                     _logDataList.postValue(list)

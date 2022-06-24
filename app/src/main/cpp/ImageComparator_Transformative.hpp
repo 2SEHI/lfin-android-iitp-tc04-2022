@@ -37,7 +37,7 @@ namespace lpin
 				std::vector<cv::KeyPoint> keypoints;
 				cv::Mat descriptors;
 			};
-			
+
 			Data data[numberOfImagesToUse];
 			bool isDataChanged = true;
 
@@ -59,7 +59,7 @@ namespace lpin
 
 			/*
 				Note.
-				
+
 				k == 2일 때 기준으로 작성되어 있음.
 				변경하려는 경우 match 필터링을 수행하는 for문의 내용물(thresholdForSecondMatch 값을 사용하는 부분)을 변경해 주어야 함
 			*/

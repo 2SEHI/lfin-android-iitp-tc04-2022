@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.R
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.adapter.LogAdapter
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.databinding.ActivityMainBinding
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
@@ -25,12 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
-    private lateinit var logAdapter: LogAdapter
+//    private lateinit var logAdapter: LogAdapter
 
     private var pressedTime: Long = 0
     private val duration = Toast.LENGTH_SHORT
@@ -42,9 +46,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.vm = mainViewModel
 
-        logAdapter = LogAdapter()
+        // 테스트 로그 출력 RecycleView
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        // 로그 Adapter
+        val logAdapter = LogAdapter()
         binding.recyclerview.adapter = logAdapter
-
+        recyclerView.adapter = logAdapter
 
         // 외부 접근 메모리 접근 가능할 경우,
         // json, 이미지 가져오기
@@ -52,11 +59,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("TAG", "카메라 허가 받아야함")
             requestPermission()
         }
-
         // 이미지처리결과 리스트 RecycleView 업데이트
         mainViewModel.logDataList.observe(this, Observer {
             it?.let {
-//                mainViewModel.smoothScrollToPosition(it.size)
+                recyclerView.smoothScrollToPosition(it.size)
                 logAdapter.submitList(it?.toMutableList())
             }
         })
