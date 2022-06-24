@@ -70,7 +70,7 @@ namespace lpin
 
 			static int PutBaseImage(void *bitmap)
 			{
-				cache[idx_img_base] = ImageConverter::Convert(ImageConverter::Convert(bitmap));
+				cache[idx_img_base] = ImageConverter::Convert(bitmap);
 				comparator.PutImage<ImageComparator::idx_img_base>(cache[idx_img_base]);
 
 				return 0;
@@ -78,7 +78,7 @@ namespace lpin
 
 			static int PutQueryImage(void *bitmap)
 			{
-				cache[idx_img_query] = ImageConverter::Convert(ImageConverter::Convert(bitmap));
+				cache[idx_img_query] = ImageConverter::Convert(bitmap);
 				comparator.PutImage<ImageComparator::idx_img_query>(cache[idx_img_query]);
 
 				return 0;
