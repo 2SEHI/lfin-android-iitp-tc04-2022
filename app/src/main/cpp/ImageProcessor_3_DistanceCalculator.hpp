@@ -86,6 +86,10 @@ namespace lpin
 
 			static int PutMetadata(double horizontalDistance_base, double height_base, double angle_base)
 			{
+				__android_log_print(ANDROID_LOG_DEBUG, "PutMetadata", "horizontalDistance_base: %f", horizontalDistance_base);
+				__android_log_print(ANDROID_LOG_DEBUG, "PutMetadata", "height_base: %f", height_base);
+				__android_log_print(ANDROID_LOG_DEBUG, "PutMetadata", "angle_base: %f", angle_base);
+
 				ImageProcessor::horizontalDistance_base = horizontalDistance_base;
 				ImageProcessor::height_base = height_base;
 				ImageProcessor::angle_base = angle_base;
