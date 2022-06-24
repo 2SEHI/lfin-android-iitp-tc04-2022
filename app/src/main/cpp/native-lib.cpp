@@ -4,13 +4,16 @@
 #include <android/log.h>
 #include "opencv2/core.hpp"
 #include "common.hpp"
+#include "Constants.hpp"
+
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO   , "libnav", __VA_ARGS__)
 
 static char *buffer_status;
-static char *buffer_log;
 // c++20 버전업 대응
-//static char *buffer_logLine;
+static char *buffer_logLine;
 static char *buffer_fullResult;
+
+using Constants = lpin::opencv::Constants<3>;
 
 extern "C"
 JNIEXPORT int JNICALL
@@ -18,7 +21,10 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
         JNIEnv *env, jobject thiz) {
     LOG("Initialize 시작", "--------------------------");
     int result = lpin::opencv::Initialize(0);
-
+    buffer_status = lpin::opencv::GetPtrOfString(::Constants::Gimme_Status);
+    buffer_logLine = lpin::opencv::GetPtrOfString(::Constants::Gimme_LogLine);
+    buffer_fullResult = lpin::opencv::GetPtrOfString(::Constants::Gimme_FullResult);
+//    buffer_logLine = lpin::opencv::GetPtrOfString(::Constants::Gimme_Todo);
     LOG("Initialize 끝", "--------------------------");
     return result;
 }
@@ -44,8 +50,7 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
 
     // PutImage
     // c++20 버전업 대응
-//    lpin::opencv::PutImage(&ptr);
-    lpin::opencv::PutImage(&ptr, info.width, info.height);
+    lpin::opencv::PutImage(ptr);
     LOG("Image size --> width: %d, height: %d", info.width, info.height);
     // unlock
     ret = AndroidBitmap_unlockPixels(env, bitmap);
@@ -61,9 +66,10 @@ JNIEXPORT void JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_imageProcessing(
         JNIEnv *env,
         jobject thiz) {
-
+    LOG("imageProcessing", "들어옴");
     // 이미지 흑백처리
     lpin::opencv::Process();
+    LOG("imageProcessing", "처리 끝남");
 }
 extern "C"
 JNIEXPORT jstring JNICALL
@@ -75,8 +81,8 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
         LOG("buffer_status --> %s", buffer_status);
         return env->NewStringUTF(buffer_status);
     }else if(request_code == 1){
-        LOG("buffer_log --> %s", buffer_log);
-        return env->NewStringUTF(buffer_log);
+        LOG("buffer_log --> %s", buffer_logLine);
+        return env->NewStringUTF(buffer_logLine);
     }else if(request_code == 2){
         LOG("buffer_fullResult --> %s", buffer_fullResult);
         return env->NewStringUTF(buffer_fullResult);
@@ -105,21 +111,9 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     LOG("result[3] %x", GetNumberFromMetadata(meta_data, 3));
 
     // c++20 버전업 대응
-    // lpin::opencv::PutByteBlock(meta_data);
-    lpin::opencv::PutByteBlock(meta_data, 32);
+     lpin::opencv::PutByteBlock(meta_data);
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_putMetadata2(
-        JNIEnv *env, jobject thiz, jstring byte_array) {
-    const char *meta_data = env->GetStringUTFChars(byte_array, 0);
-
-    env->ReleaseStringUTFChars(byte_array, meta_data);
-    // c++20 버전업 대응
-    // lpin::opencv::PutByteBlock((char *)meta_data);
-    lpin::opencv::PutByteBlock((char *)meta_data, 32);
-}
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter_00024Companion_restart(
