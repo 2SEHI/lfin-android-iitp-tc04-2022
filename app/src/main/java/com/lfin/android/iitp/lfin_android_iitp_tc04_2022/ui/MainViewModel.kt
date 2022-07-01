@@ -21,6 +21,7 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +52,16 @@ class MainViewModel @Inject constructor(
 //        val csvDir = File("${Environment.getExternalStorageDirectory()}${File.separator}${Constants.CSV_DIR}")
 
     }
+    val _loadDataBtnStatus = MutableLiveData<Boolean>().apply { value=true }
+    val loadDataBtnStatus: LiveData<Boolean> get() = _loadDataBtnStatus
+
+    var testCnt = 0
+    val _startTestBtnStatus = MutableLiveData<Boolean>().apply { value=true }
+    val startTestBtnStatus: LiveData<Boolean> get() = _startTestBtnStatus
+
+
+    val _shareBtnStatus = MutableLiveData<Boolean>().apply { value=true }
+    val shareBtnStatus: LiveData<Boolean> get() = _shareBtnStatus
 
     val _currentState =
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
@@ -77,6 +88,7 @@ class MainViewModel @Inject constructor(
     private val _logDataList = MutableLiveData<List<String?>>()
     val logDataList: LiveData<List<String?>> = _logDataList
     private val list = mutableListOf<String?>()
+
 
     init {
         viewModelScope.launch {
@@ -107,19 +119,20 @@ class MainViewModel @Inject constructor(
             // 이미지 파일명 목록 가져오기
             val response = getImageFileNameUseCase.invoke()
             if (response.succeeded) {
-                var totalSize = response.data?.size
+                var totalSize = getDecimalFormat(response.data?.size)
                 var current = 0
 
                 // 서버에서 이미지파일 다운로드 후, 디바이스에 저장
                 response.data?.forEach {
                     current++
-                    _currentState.postValue("이미지 파일 $current/$totalSize 다운로드 중...")
+                    _currentState.postValue("이미지 파일 ${getDecimalFormat(current)}/${totalSize} 다운로드 중...")
                     Log.d(TAG, it)
 
                     _baseImage.postValue(downloadImageFileUseCase.invoke(DownloadImageFileUseCase.Param(it)).data)
                 }
-                _currentState.postValue("데이터 다운로드 완료")
+                _currentState.postValue("데이터 준비 완료(${getDecimalFormat(current)}/${totalSize})")
                 _nextBehavior.postValue("시험 시작")
+                _loadDataBtnStatus.postValue(false)
 
             }
         }
@@ -169,12 +182,19 @@ class MainViewModel @Inject constructor(
                     _logDataList.postValue(list)
                 }
                 saveCsvUseCase.invoke()
-//                _currentState.postValue("시험 완료")
-                _nextBehavior.postValue("시험 결과 내보내기")
+                _loadDataBtnStatus.postValue(false)
+                _currentState.postValue("${++testCnt}번째 시험완료")
+                _nextBehavior.postValue(if( testCnt >= 3) "시험결과 내보내기" else "시험시작")
+                _startTestBtnStatus.postValue(false)
             } else {
 
             }
         }
+    }
+
+    fun getDecimalFormat(number: Int?): String {
+        val deciamlFormat = DecimalFormat("##,###")
+        return deciamlFormat.format(number)
     }
 
     fun reset() {

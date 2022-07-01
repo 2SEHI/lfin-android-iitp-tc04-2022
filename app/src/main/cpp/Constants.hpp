@@ -229,7 +229,7 @@ namespace lpin
 				Gimme_Todo = 3,
 			};
 
-			static constexpr int numberOfTrials = 10000;
+			static constexpr int numberOfTrials = 1000;
 
 			static constexpr int img_input_width = 256;
 			static constexpr int img_input_height = 256;

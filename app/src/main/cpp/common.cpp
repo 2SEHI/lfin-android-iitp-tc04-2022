@@ -33,7 +33,7 @@ static int count_trials;
 
 
 static char buffer_status[256];
-static char buffer_logLine[256];
+static char buffer_logLine[1000];
 static char buffer_fullResult[128 * Constants::numberOfTrials + 1];
 static char buffer_todo[256];
 

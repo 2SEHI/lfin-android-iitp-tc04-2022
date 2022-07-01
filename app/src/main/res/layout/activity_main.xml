@@ -34,8 +34,7 @@
                 android:layout_gravity="center"
                 android:text="TC04"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"/>
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
@@ -69,14 +68,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:text="@{vm.currentState}"
-                    android:textSize="17dp"/>
+                    android:textSize="15dp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_centerVertical="true"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -95,20 +94,21 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:text="@{vm.nextBehavior}"
-                    android:textSize="17dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3">
+                android:layout_weight="3"
+                android:paddingHorizontal="5dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"
+                    android:layout_weight="4"
                     android:orientation="vertical"
-                    android:paddingHorizontal="5dp">
+                    android:paddingHorizontal="1dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -116,13 +116,14 @@
                         android:layout_weight="1"
                         android:text="base"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textSize="14dp"
+                        android:gravity="center"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="9"
-                        android:background="@drawable/draw_border"
+                        android:background="@drawable/draw_border1"
                         android:orientation="vertical"
                         android:padding="4dp">
 
@@ -138,17 +139,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:text=""
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="10dp"
+                            android:gravity="center"/>
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"
+                    android:layout_weight="4"
                     android:orientation="vertical"
-                    android:paddingHorizontal="5dp">
+                    android:paddingHorizontal="1dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -156,13 +158,14 @@
                         android:layout_weight="1"
                         android:text="query"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textSize="14dp"
+                        android:gravity="center"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="9"
-                        android:background="@drawable/draw_border"
+                        android:background="@drawable/draw_border1"
                         android:orientation="vertical"
                         android:padding="4dp">
 
@@ -178,7 +181,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:text=""
+                            android:textSize="10dp"
+                            android:gravity="center"
                             android:textAlignment="center" />
                     </LinearLayout>
                 </LinearLayout>
@@ -188,7 +192,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_centerVertical="true"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -202,10 +206,11 @@
                     <Button
                         android:id="@+id/loadDataBtn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginHorizontal="5dp"
                         android:onClick="@{ vm.dataLoadingStart }"
-                        android:text="데이터 \n가져오기"
+                        android:text='@{vm.loadDataBtnStatus ? "데이터\n가져오기":"데이터\n가져오기\n✅"}'
+                        app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
                         app:layout_constraintStart_toStartOf="parent"
@@ -214,10 +219,11 @@
                     <Button
                         android:id="@+id/startTestBtn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginHorizontal="5dp"
                         android:onClick="@{ vm.processingStart }"
-                        android:text="시험 시작"
+                        android:text='@{vm.startTestBtnStatus ?"시험시작":"시험시작\n✅"}'
+                        app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/sendResultBtn"
                         app:layout_constraintStart_toEndOf="@+id/loadDataBtn"
@@ -226,9 +232,10 @@
                     <Button
                         android:id="@+id/sendResultBtn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginHorizontal="5dp"
-                        android:text="시험 결과\n내보내기"
+                        android:text='@{vm.shareBtnStatus ?"시험결과\n내보내기":"시험결과\n내보내기\n✅"}'
+                        app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/startTestBtn"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -239,7 +246,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
-                android:background="@drawable/draw_border"
+                android:background="@drawable/draw_border2"
                 >
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -247,6 +254,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:scrollbars="vertical"
+                    android:scrollbarFadeDuration="0"
+                    android:scrollbarSize="10dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/recyclerview_item">
 

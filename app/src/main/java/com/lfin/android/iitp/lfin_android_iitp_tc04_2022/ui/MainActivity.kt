@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.vm = mainViewModel
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // 테스트 로그 출력 RecycleView
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
@@ -234,9 +236,11 @@ class MainActivity : AppCompatActivity() {
                         if (sendIntent.resolveActivity(packageManager) != null) {
 
                             startActivity(sendIntent)
+                            ""
+                            mainViewModel._currentState.postValue("시험결과 내보내기 완료")
+                            mainViewModel._nextBehavior.postValue("앱 종료하기")
+                            mainViewModel._shareBtnStatus.postValue(false)
 
-                            mainViewModel._currentState.postValue("파일 전송 완료")
-                            mainViewModel._nextBehavior.postValue("시험 결과 확인")
                         } else {
                             Toast.makeText(this@MainActivity, "전송 실패", Toast.LENGTH_SHORT).show()
                         }

@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/logString"
         android:text="New Text"
-        android:textSize="15dp"
+        android:textSize="14dp"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
