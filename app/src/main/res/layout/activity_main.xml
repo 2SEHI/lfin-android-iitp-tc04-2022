@@ -206,10 +206,10 @@
                     <Button
                         android:id="@+id/loadDataBtn"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginHorizontal="5dp"
                         android:onClick="@{ vm.dataLoadingStart }"
-                        android:text='@{vm.loadDataBtnStatus ? "데이터\n가져오기":"데이터\n가져오기\n✅"}'
+                        android:text=''
                         app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/startTestBtn"
@@ -219,10 +219,10 @@
                     <Button
                         android:id="@+id/startTestBtn"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginHorizontal="5dp"
                         android:onClick="@{ vm.processingStart }"
-                        android:text='@{vm.startTestBtnStatus ?"시험시작":"시험시작\n✅"}'
+                        android:text=''
                         app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/sendResultBtn"
@@ -232,9 +232,9 @@
                     <Button
                         android:id="@+id/sendResultBtn"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginHorizontal="5dp"
-                        android:text='@{vm.shareBtnStatus ?"시험결과\n내보내기":"시험결과\n내보내기\n✅"}'
+                        android:text=''
                         app:layout_constraintHeight_percent="0.8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/startTestBtn"

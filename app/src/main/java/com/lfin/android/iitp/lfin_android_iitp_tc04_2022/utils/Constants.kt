@@ -8,9 +8,9 @@ object Constants {
 
     const val BASE_URL = "https://22tta.lfin.kr"
     // 10000건 실행시
-    const val QUERY_PLAN = "queryPlan_v1_10000.json"
+//    const val QUERY_PLAN = "queryPlan_v1_10000.json"
     // 1000건 실행시 주석 해제
-//    const val QUERY_PLAN = "queryPlan_v1.json"
+    const val QUERY_PLAN = "queryPlan_v1.json"
 
     const val REQUEST_EXTERNAL_STORAGE = 1
     /**

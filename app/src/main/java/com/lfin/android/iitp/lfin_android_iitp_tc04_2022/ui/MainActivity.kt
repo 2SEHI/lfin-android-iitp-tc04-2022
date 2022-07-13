@@ -52,8 +52,10 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         // 로그 Adapter
         val logAdapter = LogAdapter()
+
         binding.recyclerview.adapter = logAdapter
         recyclerView.adapter = logAdapter
+
 
         // 외부 접근 메모리 접근 가능할 경우,
         // json, 이미지 가져오기
@@ -104,6 +106,22 @@ class MainActivity : AppCompatActivity() {
                 binding.queryFileName.text = it
             }
         })
+        mainViewModel.loadDataBtn.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch    {
+                binding.loadDataBtn.text = it
+            }
+        })
+        mainViewModel.startTestBtn.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch    {
+                binding.startTestBtn.text = it
+            }
+        })
+        mainViewModel.sendResultBtn.observe(this, Observer {
+            CoroutineScope(Dispatchers.Main).launch    {
+                binding.sendResultBtn.text = it
+            }
+        })
+
         binding.sendResultBtn.setOnClickListener {
             openFile()
         }
@@ -239,7 +257,7 @@ class MainActivity : AppCompatActivity() {
                             ""
                             mainViewModel._currentState.postValue("시험결과 내보내기 완료")
                             mainViewModel._nextBehavior.postValue("앱 종료하기")
-                            mainViewModel._shareBtnStatus.postValue(false)
+                            mainViewModel._sendResultBtn.postValue("시험결과\n내보내기\n✅")
 
                         } else {
                             Toast.makeText(this@MainActivity, "전송 실패", Toast.LENGTH_SHORT).show()

@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.lfin.android.iitp.lfin_android_iitp_tc04_2022"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 31
         versionCode 1
         versionName "0.0.1"

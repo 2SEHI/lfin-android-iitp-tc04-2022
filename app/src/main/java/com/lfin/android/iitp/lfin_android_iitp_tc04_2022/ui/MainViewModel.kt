@@ -14,10 +14,7 @@ import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.resetDatabase.Re
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.resetDatabase.ResetQueryPlanUseCase
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.loadData.*
 import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.domain.startTest.*
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.Constants
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.data
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.decodeBase64
-import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.succeeded
+import com.lfin.android.iitp.lfin_android_iitp_tc04_2022.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -52,16 +49,15 @@ class MainViewModel @Inject constructor(
 //        val csvDir = File("${Environment.getExternalStorageDirectory()}${File.separator}${Constants.CSV_DIR}")
 
     }
-    val _loadDataBtnStatus = MutableLiveData<Boolean>().apply { value=true }
-    val loadDataBtnStatus: LiveData<Boolean> get() = _loadDataBtnStatus
+    private val _loadDataBtn = MutableLiveData<String>().apply { value="데이터\n가져오기" }
+    val loadDataBtn: LiveData<String> get() = _loadDataBtn
 
     var testCnt = 0
-    val _startTestBtnStatus = MutableLiveData<Boolean>().apply { value=true }
-    val startTestBtnStatus: LiveData<Boolean> get() = _startTestBtnStatus
+    private val _startTestBtn = MutableLiveData<String>().apply { value="시험시작" }
+    val startTestBtn: LiveData<String> get() = _startTestBtn
 
-
-    val _shareBtnStatus = MutableLiveData<Boolean>().apply { value=true }
-    val shareBtnStatus: LiveData<Boolean> get() = _shareBtnStatus
+    val _sendResultBtn = MutableLiveData<String>().apply { value="시험결과\n내보내기" }
+    val sendResultBtn: LiveData<String> get() = _sendResultBtn
 
     val _currentState =
         MutableLiveData<String>().apply { value = Constants.CS_BEFORE_TEST_DATA }
@@ -88,7 +84,6 @@ class MainViewModel @Inject constructor(
     private val _logDataList = MutableLiveData<List<String?>>()
     val logDataList: LiveData<List<String?>> = _logDataList
     private val list = mutableListOf<String?>()
-
 
     init {
         viewModelScope.launch {
@@ -130,9 +125,10 @@ class MainViewModel @Inject constructor(
 
                     _baseImage.postValue(downloadImageFileUseCase.invoke(DownloadImageFileUseCase.Param(it)).data)
                 }
+                _loadDataBtn.postValue("데이터\n가져오기\n✅")
                 _currentState.postValue("데이터 준비 완료(${getDecimalFormat(current)}/${totalSize})")
                 _nextBehavior.postValue("시험 시작")
-                _loadDataBtnStatus.postValue(false)
+//                _isLoadData.value = true
 
             }
         }
@@ -174,7 +170,7 @@ class MainViewModel @Inject constructor(
 
                     Log.d("original metadata: ", it.metadata)
                     // convert base64 to ByteArray
-                    val metadata = decodeBase64(it.metadata)
+                    val metadata = AndroidBase64.decode(it.metadata)
                     Log.d("original metadata: ", metadata.toString(Charsets.UTF_8))
                     _currentState.postValue(putMetadataUseCase.invoke(PutMetadataUseCase.Param(metadata)).data)
                     _currentState.postValue(findLocationUseCase.invoke().data)
@@ -182,10 +178,9 @@ class MainViewModel @Inject constructor(
                     _logDataList.postValue(list)
                 }
                 saveCsvUseCase.invoke()
-                _loadDataBtnStatus.postValue(false)
                 _currentState.postValue("${++testCnt}번째 시험완료")
+                _startTestBtn.postValue(if( testCnt >= 3) "시험시작\n✅" else "시험시작")
                 _nextBehavior.postValue(if( testCnt >= 3) "시험결과 내보내기" else "시험시작")
-                _startTestBtnStatus.postValue(false)
             } else {
 
             }
