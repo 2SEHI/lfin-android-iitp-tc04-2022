@@ -92,9 +92,9 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
     }
 }
 
-jdouble GetNumberFromMetadata(jbyteArray decodedArray, jint idx)
+jdouble GetNumberFromMetadata(JNIEnv *env,jbyteArray decodedArray, jint idx)
 {
-    double *decodePtr = (double *)decodedArray;
+    double *decodePtr = (double *)env->GetByteArrayElements(decodedArray, NULL);
 
     return decodePtr[idx];
 }
@@ -105,13 +105,13 @@ Java_com_lfin_android_iitp_lfin_1android_1iitp_1tc04_12022_adapter_OpenCVAdapter
         JNIEnv *env,
         jobject thiz,
         jbyteArray meta_data) {
-    LOG("result[0] %x", GetNumberFromMetadata(meta_data, 0));
-    LOG("result[1] %x", GetNumberFromMetadata(meta_data, 1));
-    LOG("result[2] %x", GetNumberFromMetadata(meta_data, 2));
-    LOG("result[3] %x", GetNumberFromMetadata(meta_data, 3));
+//    LOG("result[0] %f", GetNumberFromMetadata(env,meta_data, 0));
+//    LOG("result[1] %f", GetNumberFromMetadata(env,meta_data, 1));
+//    LOG("result[2] %f", GetNumberFromMetadata(env,meta_data, 2));
+//    LOG("result[3] %f", GetNumberFromMetadata(env,meta_data, 3));
 
     // c++20 버전업 대응
-     lpin::opencv::PutByteBlock(meta_data);
+     lpin::opencv::PutByteBlock(env->GetByteArrayElements(meta_data, NULL));
 }
 
 extern "C"

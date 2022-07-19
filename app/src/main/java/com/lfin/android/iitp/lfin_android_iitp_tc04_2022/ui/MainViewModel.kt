@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
     private val _loadDataBtn = MutableLiveData<String>().apply { value="데이터\n가져오기" }
     val loadDataBtn: LiveData<String> get() = _loadDataBtn
 
-    var testCnt = 0
+//    var testCnt = 0
     private val _startTestBtn = MutableLiveData<String>().apply { value="시험시작" }
     val startTestBtn: LiveData<String> get() = _startTestBtn
 
@@ -168,7 +168,6 @@ class MainViewModel @Inject constructor(
                     _currentState.postValue(putBaseImageUseCase.invoke(PutBaseImageUseCase.Param(baseBitmap)).data)
                     _currentState.postValue(putQueryImageUseCase.invoke(PutQueryImageUseCase.Param(queryBitmap)).data)
 
-                    Log.d("original metadata: ", it.metadata)
                     // convert base64 to ByteArray
                     val metadata = AndroidBase64.decode(it.metadata)
                     Log.d("original metadata: ", metadata.toString(Charsets.UTF_8))
@@ -178,9 +177,9 @@ class MainViewModel @Inject constructor(
                     _logDataList.postValue(list)
                 }
                 saveCsvUseCase.invoke()
-                _currentState.postValue("${++testCnt}번째 시험완료")
-                _startTestBtn.postValue(if( testCnt >= 3) "시험시작\n✅" else "시험시작")
-                _nextBehavior.postValue(if( testCnt >= 3) "시험결과 내보내기" else "시험시작")
+                _currentState.postValue("시험완료")
+                _startTestBtn.postValue("시험시작\n✅")
+                _nextBehavior.postValue("시험결과 내보내기")
             } else {
 
             }

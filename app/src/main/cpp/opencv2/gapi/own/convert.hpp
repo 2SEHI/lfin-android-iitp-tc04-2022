@@ -20,7 +20,7 @@ namespace cv
         std::vector<T> result(sz.dims());
         for (int i = 0; i < sz.dims(); i++) {
             // Note: cv::MatSize is not iterable
-            result[i] = static_cast<T>(sz[i]);
+            result[result[i] = static_cast<T>(sz[i]);
         }
         return result;
     }
